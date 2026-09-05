@@ -653,47 +653,6 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
           </p>
         </div>
       </div>
-
-      {/* Supplementary Context Cards: Verified Nordic Heritage Reference */}
-      <div className="w-full mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Visual Specimen Card 1 */}
-        <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex items-center gap-4 overflow-hidden group hover:shadow-md transition-all border border-outline-variant/20">
-          <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-surface-container">
-            <img
-              alt="Nordic conference hall setup at Grand Hôtel"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMCUVrf5BbDx6_Ao3tUqGD530hGbeOfX05PzNdId9iCamrSFhc-HuZxvP945lY0rovhz4dfD3WlWGsXNEvvDLi0hIC1TFQ8_3qjNpYS_1XIWKfbVYPDIdK_b2AUzWYZosxYoMoMcnbhmLEvXNfmVraPKVke8C4glqT1EbdNWHCsdQIdd-uzwSXoDOo4StU4RVussih4Mcu6YZEou6uMg4w3l9sLwN7htm7HzGIvi8d9Bmxn3_y6SfuGtvMU0KyU1jSmx8"
-              loading="lazy"
-            />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[11px] text-primary font-bold uppercase tracking-wider">Historical Context</span>
-            <h2 className="text-sm font-semibold text-on-surface truncate">Winter Garden Plenary</h2>
-            <p className="text-xs text-on-surface-variant line-clamp-2 mt-0.5">
-              Available for up to 300 delegates with integrated sound array.
-            </p>
-          </div>
-        </div>
-
-        {/* Visual Specimen Card 2 */}
-        <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex items-center gap-4 overflow-hidden group hover:shadow-md transition-all border border-outline-variant/20">
-          <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-surface-container">
-            <img
-              alt="Nordic banquet and catering arrangement"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrt2hTB0QrVPL-RM1GzBMgwBHAc8R_O7p8k0iBzS7ixqCk7F-TxJ9PxYeijWHWx_ImVb3hI8R2v1l6gudooAzRJ09UpLW_RZggh4wFNmsHvP3ZGPiwN9ChlN5SOOXWtEFbyEk_G7eRTwMHhy_8hD5Or9zDQIZ-dVqgpXX9fdkCTzrvlgQ02o_hdoMU1ZsrONdniqKgJCS1BjnQsABdgYpJsGl4YqdTYFkM3MMbsUYeuzu0hIU1Q2ii2VCToJ_Ctvip5YY"
-              loading="lazy"
-            />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-[11px] text-secondary font-bold uppercase tracking-wider">Catering Protocol</span>
-            <h2 className="text-sm font-semibold text-on-surface truncate">French Dining Room</h2>
-            <p className="text-xs text-on-surface-variant line-clamp-2 mt-0.5">
-              Fine dining packages with seasonal Nordic ingredients.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

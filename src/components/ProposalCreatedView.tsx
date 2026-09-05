@@ -370,36 +370,6 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
         </div>
       </div>
 
-      {/* Processing Trace Timeline */}
-      <div className="w-full bg-surface-container-high/50 rounded-2xl p-4 mb-6 border border-outline-variant/15 text-xs">
-        <span className="text-[10px] uppercase font-bold text-on-surface-variant block mb-2 tracking-wider">
-          Processing Trace Timeline
-        </span>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest">
-            <span className="material-symbols-outlined text-primary text-[18px]">mic</span>
-            <div className="flex flex-col">
-              <span className="font-semibold text-on-surface">1. Voice Recorded</span>
-              <span className="text-[10px] text-on-surface-variant">Web Speech API · 0.3s</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest">
-            <span className="material-symbols-outlined text-secondary text-[18px]">psychology</span>
-            <div className="flex flex-col">
-              <span className="font-semibold text-on-surface">2. Structured AI JSON</span>
-              <span className="text-[10px] text-on-surface-variant">Vercel AI SDK (Zod) · 1.2s</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-container-lowest">
-            <span className="material-symbols-outlined text-primary text-[18px]">cloud_done</span>
-            <div className="flex flex-col">
-              <span className="font-semibold text-on-surface">3. Proposales Gateway</span>
-              <span className="text-[10px] text-on-surface-variant">POST /v1/proposals · 0.4s</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Bottom Action Navigation */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <button

@@ -34,12 +34,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ userProfile, onOpenProfile
           <span className="w-1.5 h-1.5 rounded-full bg-secondary ml-0.5 animate-pulse flex-shrink-0" />
         </div>
 
-        {/* Database Sync Status / User Badge */}
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[11px] font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-            <span>PostgreSQL Synced</span>
-          </div>
           {/* User Badge */}
           <button
             onClick={onOpenProfile}
