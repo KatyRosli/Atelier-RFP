@@ -9,8 +9,10 @@ import { HistoryView } from "./components/HistoryView";
 import { ProfileView, UserProfileData } from "./components/ProfileView";
 import { INITIAL_PROPOSALS, INITIAL_NORDIC_PAYLOAD } from "./data/mockProposals";
 import { ProposalItem, RfpPayload } from "./types";
+import { useAuth } from "./context/AuthContext.tsx";
 
 export default function App() {
+  const { user, idToken } = useAuth();
   const [activeTab, setActiveTab] = useState<NavTab>("overview");
   const [proposals, setProposals] = useState<ProposalItem[]>(INITIAL_PROPOSALS);
   const [currentPayload, setCurrentPayload] = useState<RfpPayload>(INITIAL_NORDIC_PAYLOAD);
@@ -51,6 +53,44 @@ export default function App() {
       document.documentElement.classList.add("dark");
     }
   }, []);
+
+  // Fetch proposals from PostgreSQL backend when authenticated
+  useEffect(() => {
+    async function loadProposalsFromDatabase() {
+      if (!idToken) return;
+      try {
+        const res = await fetch("/api/proposals", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.proposals && Array.isArray(data.proposals) && data.proposals.length > 0) {
+            setProposals(data.proposals);
+            setActiveProposal(data.proposals[0]);
+          } else {
+            // Seed initial proposals to the user's PostgreSQL database
+            for (const initial of INITIAL_PROPOSALS) {
+              await fetch("/api/proposals", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${idToken}`,
+                },
+                body: JSON.stringify({ item: initial }),
+              });
+            }
+            setProposals(INITIAL_PROPOSALS);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch proposals from PostgreSQL:", err);
+      }
+    }
+
+    loadProposalsFromDatabase();
+  }, [idToken]);
 
   // Transitions
   const handleStartVoice = () => {

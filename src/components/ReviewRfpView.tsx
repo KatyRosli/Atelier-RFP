@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { RfpPayload, ProposalItem } from "../types";
 import { ProposalPdfModal } from "./ProposalPdfModal";
+import { useAuth } from "../context/AuthContext.tsx";
 
 interface ReviewRfpViewProps {
   payload: RfpPayload;
@@ -15,6 +16,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   onReRecord,
   onSubmitToProposales,
 }) => {
+  const { user, idToken, signInWithGoogle } = useAuth();
   const [viewMode, setViewMode] = useState<"structured" | "json">("structured");
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -36,16 +38,19 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   const handleSendToProposales = async () => {
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/proposals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload }),
-      });
+      let activeToken = idToken;
+      if (!activeToken && !user) {
+        // Offer quick Google Sign In to save directly to PostgreSQL database
+        try {
+          await signInWithGoogle();
+        } catch (authErr) {
+          console.warn("User dismissed Google sign-in; proceeding with local proposal creation:", authErr);
+        }
+      }
 
-      const data = await res.json();
       const clientName = payload.organization.name;
       const slug = clientName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-      const finalUrl = data.url || `https://proposales.com/p/grand-hotel/${slug}-2027`;
+      const generatedUrl = `https://proposales.com/p/grand-hotel/${slug}-2027`;
 
       const meetingSummary = payload.event.meetingFacilities?.length
         ? payload.event.meetingFacilities.map((m) => `${m.space} (${m.durationDays} days, ${m.setupPreference})`).join(", ")
@@ -57,8 +62,8 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
 
       const formattedDates = `${payload.event.dates.checkIn} to ${payload.event.dates.checkOut} (${payload.event.dates.nights} nights)`;
 
-      const newProposalItem: ProposalItem = {
-        id: data.id || `PRP-${Math.floor(10000 + Math.random() * 90000)}`,
+      const preliminaryItem: ProposalItem = {
+        id: `PRP-${Math.floor(10000 + Math.random() * 90000)}`,
         title: `${clientName} — ${payload.event.type || "Offsite"}`,
         clientName,
         contactName: payload.organization.contact.name,
@@ -75,7 +80,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         marginPct: Math.round(payload.financials.estimatedMarginPct * 100),
         status: "sent_to_proposales",
         createdAtFormatted: "Just now",
-        proposalUrl: finalUrl,
+        proposalUrl: generatedUrl,
         transcript,
         meetingRooms: meetingSummary,
         cateringSummary: cateringSummary,
@@ -84,7 +89,29 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         rawJson: payload,
       };
 
-      onSubmitToProposales(payload, newProposalItem);
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (idToken) {
+        headers["Authorization"] = `Bearer ${idToken}`;
+      }
+
+      const res = await fetch("/api/proposals", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ payload, item: preliminaryItem }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const savedProposal = data.proposal || {
+          ...preliminaryItem,
+          id: data.id || preliminaryItem.id,
+          proposalUrl: data.url || preliminaryItem.proposalUrl,
+        };
+        onSubmitToProposales(payload, savedProposal);
+      } else {
+        // Fallback for unauthenticated state
+        onSubmitToProposales(payload, preliminaryItem);
+      }
     } catch (e) {
       console.warn("Proposales dispatch fallback:", e);
       const clientName = payload.organization.name;
@@ -125,6 +152,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         latencySeconds: 18.2,
         rawJson: payload,
       };
+
       onSubmitToProposales(payload, newProposalItem);
     } finally {
       setIsSubmitting(false);

@@ -6,7 +6,10 @@ import { generateObject, generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
-import { RfpPayloadSchema, RfpPayload } from "./src/types";
+import { RfpPayloadSchema, RfpPayload, ProposalItem } from "./src/types";
+import { requireAuth, AuthRequest } from "./src/middleware/auth.ts";
+import { getOrCreateUser } from "./src/db/users.ts";
+import { getProposals, upsertProposal } from "./src/db/proposals.ts";
 
 // Load environment variables from .env.local first, then fallback to .env
 dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
@@ -19,25 +22,6 @@ app.use(express.json());
 
 // In-memory proposal storage for dynamic session tracking
 let storedProposals: any[] = [];
-
-// LLMs commonly emit `null` for fields not mentioned in the transcript, but
-// zod's `.default()` only fills in `undefined` - a `null` fails validation
-// outright and discards the entire (otherwise correct) payload. Recursively
-// convert `null` to `undefined` so per-field defaults can kick in instead.
-function nullsToUndefined<T>(value: T): T {
-  if (value === null) return undefined as unknown as T;
-  if (Array.isArray(value)) {
-    return value.map((v) => nullsToUndefined(v)) as unknown as T;
-  }
-  if (value && typeof value === "object") {
-    const result: Record<string, unknown> = {};
-    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
-      result[key] = nullsToUndefined(v);
-    }
-    return result as T;
-  }
-  return value;
-}
 
 // Helper heuristic fallback extractor
 function extractWithHeuristics(transcript: string): RfpPayload {
@@ -277,10 +261,10 @@ Transcript: "${transcript}"`,
         }
 
         if (parsedResult) {
-          const validated = RfpPayloadSchema.parse(nullsToUndefined({
+          const validated = RfpPayloadSchema.parse({
             $schema: "https://api.proposales.com/v1/schemas/rfp-intake.json",
             ...parsedResult,
-          }));
+          });
           return res.json({ success: true, payload: validated, provider: "vercel-ai-sdk-gpt-4o-mini" });
         }
       } catch (openaiErr) {
@@ -360,19 +344,38 @@ Return valid JSON only without markdown code blocks.`;
   }
 });
 
-// API Integration: Proposales POST /v1/proposals
-app.post("/api/proposals", async (req, res) => {
+// Database-backed proposal retrieval: GET /api/proposals (secured with Firebase Auth)
+app.get("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
   try {
-    const { payload, apiKeyOverride } = req.body;
+    const uid = req.user!.uid;
+    const userEmail = req.user!.email || "user@grandhotel.se";
+    await getOrCreateUser(uid, userEmail);
+
+    const dbProposals = await getProposals(uid);
+    res.json({ success: true, proposals: dbProposals });
+  } catch (error: any) {
+    console.error("Failed to fetch proposals:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch proposals from database" });
+  }
+});
+
+// Database-backed proposal persistence: POST /api/proposals (secured with Firebase Auth)
+app.post("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
+  try {
+    const uid = req.user!.uid;
+    const userEmail = req.user!.email || "user@grandhotel.se";
+    await getOrCreateUser(uid, userEmail);
+
+    const { payload, item, apiKeyOverride } = req.body;
     const apiKey = apiKeyOverride || process.env.PROPOSALES_API_KEY;
 
-    const proposalId = `PRP-${Math.floor(10000 + Math.random() * 90000)}`;
-    const clientName = payload?.organization?.name || "Nordic Tech AB";
+    const proposalId = item?.id || `PRP-${Math.floor(10000 + Math.random() * 90000)}`;
+    const clientName = payload?.organization?.name || item?.clientName || "Nordic Tech AB";
     const slug = clientName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
-    const generatedUrl = `https://proposales.com/p/grand-hotel/${slug}-2027`;
+    const generatedUrl = item?.proposalUrl || `https://proposales.com/p/grand-hotel/${slug}-2027`;
 
     // If a real PROPOSALES_API_KEY is available, attempt the live external call
     let externalApiResponse = null;
@@ -388,11 +391,11 @@ app.post("/api/proposals", async (req, res) => {
             title: `${clientName} Offsite`,
             tenant_id: "grand-hotel-stockholm",
             currency: payload?.financials?.currency || "SEK",
-            total_price: payload?.financials?.totalBudgetSEK || 450000,
+            total_price: payload?.financials?.totalBudgetSEK || item?.totalAmountSEK || 450000,
             recipient: {
-              name: payload?.organization?.contact?.name,
-              email: payload?.organization?.contact?.email,
-              phone: payload?.organization?.contact?.phone,
+              name: payload?.organization?.contact?.name || item?.contactName,
+              email: payload?.organization?.contact?.email || item?.contactEmail,
+              phone: payload?.organization?.contact?.phone || item?.contactPhone,
             },
             data: payload,
           }),
@@ -408,27 +411,61 @@ app.post("/api/proposals", async (req, res) => {
       }
     }
 
-    const newProposal = {
-      id: externalApiResponse?.id || proposalId,
-      status: "201 Created",
-      liveUrl: externalApiResponse?.url || generatedUrl,
+    const finalId = externalApiResponse?.id || proposalId;
+    const finalUrl = externalApiResponse?.url || generatedUrl;
+
+    const meetingSummary = payload?.event?.meetingFacilities?.length
+      ? payload.event.meetingFacilities.map((m: any) => `${m.space} (${m.durationDays} days, ${m.setupPreference})`).join(", ")
+      : item?.meetingRooms || "Plenary Meeting Facilities";
+
+    const cateringSummary = payload?.event?.catering?.length
+      ? payload.event.catering.map((c: any) => `${c.item}${c.quantity ? ` (x${c.quantity})` : ""}`).join(", ")
+      : item?.cateringSummary || "Standard Nordic Catering Package";
+
+    const formattedDates = payload?.event?.dates
+      ? `${payload.event.dates.checkIn} to ${payload.event.dates.checkOut} (${payload.event.dates.nights} nights)`
+      : item?.datesText || "2027-03-03 to 2027-03-05 (2 nights)";
+
+    const proposalItem: ProposalItem = {
+      id: finalId,
+      title: item?.title || `${clientName} — ${payload?.event?.type || "Offsite"}`,
       clientName,
-      attendees: payload?.event?.attendees || 60,
-      totalAmountSEK: payload?.financials?.totalBudgetSEK || 450000,
-      validUntil: "15 Jan 2027",
-      createdAt: new Date().toISOString(),
-      payload,
+      contactName: payload?.organization?.contact?.name || item?.contactName || "Maria Lindqvist",
+      contactEmail: payload?.organization?.contact?.email || item?.contactEmail || "maria@nordictech.se",
+      contactPhone: payload?.organization?.contact?.phone || item?.contactPhone || "+46 70 123 45 67",
+      guestsCount: payload?.event?.attendees ?? item?.guestsCount ?? 60,
+      datesText: formattedDates,
+      checkIn: payload?.event?.dates?.checkIn || item?.checkIn || "2027-03-03",
+      checkOut: payload?.event?.dates?.checkOut || item?.checkOut || "2027-03-05",
+      nights: payload?.event?.dates?.nights ?? item?.nights ?? 2,
+      roomQuantity: payload?.event?.roomBlock?.quantity ?? item?.roomQuantity ?? 30,
+      roomType: item?.roomType || `${payload?.event?.roomBlock?.quantity || 30} ${payload?.event?.roomBlock?.roomCategory || "Double Deluxe"} Rooms`,
+      totalAmountSEK: payload?.financials?.totalBudgetSEK ?? item?.totalAmountSEK ?? 450000,
+      marginPct: payload?.financials?.estimatedMarginPct ? Math.round(payload.financials.estimatedMarginPct * 100) : (item?.marginPct ?? 34),
+      status: item?.status || "sent_to_proposales",
+      createdAtFormatted: "Just now",
+      proposalUrl: finalUrl,
+      transcript: item?.transcript || "",
+      meetingRooms: meetingSummary,
+      cateringSummary: cateringSummary,
+      specialNotes: payload?.event?.specialDirectives || item?.specialNotes,
+      latencySeconds: item?.latencySeconds,
+      rawJson: payload || item?.rawJson,
     };
 
-    storedProposals.unshift(newProposal);
+    // Save directly to PostgreSQL via Drizzle ORM
+    await upsertProposal(proposalItem, uid);
+
+    storedProposals.unshift(proposalItem);
 
     res.status(201).json({
       success: true,
       statusCode: 201,
-      id: newProposal.id,
-      url: newProposal.liveUrl,
-      totalSEK: newProposal.totalAmountSEK,
-      clientName: newProposal.clientName,
+      id: proposalItem.id,
+      url: proposalItem.proposalUrl,
+      totalSEK: proposalItem.totalAmountSEK,
+      clientName: proposalItem.clientName,
+      proposal: proposalItem,
       externalSync: !!externalApiResponse,
     });
   } catch (err: any) {
