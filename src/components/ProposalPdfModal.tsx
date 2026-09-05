@@ -154,9 +154,6 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
                 <div className="text-[11px] tracking-wider uppercase text-slate-500 font-medium mt-0.5">
                   Stockholm · Established 1874 · The Leading Hotels of the World
                 </div>
-                <div className="text-[10px] text-slate-400 mt-1">
-                  Södra Blasieholmshamnen 8, Box 16424, 103 27 Stockholm · Tel: +46 (0)8 679 35 00
-                </div>
               </div>
 
               <div className="sm:text-right flex flex-col sm:items-end">

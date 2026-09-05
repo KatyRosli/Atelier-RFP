@@ -333,48 +333,6 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
               </div>
             </div>
           </div>
-
-          {/* Zod Schema Verification & Confidence Score Card */}
-          <div className="bg-surface-container rounded-2xl p-4 flex items-center justify-between shadow-sm border border-outline-variant/20">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
-                <span className="material-symbols-outlined text-[20px]">verified</span>
-              </div>
-              <div>
-                <div className="text-xs text-on-surface font-semibold flex items-center gap-1">
-                  Confidence Score: 98%
-                  <span className="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
-                </div>
-                <div className="text-[11px] text-on-surface-variant font-mono">
-                  Valid: <code className="text-primary font-semibold">RfpPayloadSchema.safeParse()</code>
-                </div>
-              </div>
-            </div>
-            <div className="text-right">
-              <span className="inline-flex items-center px-2 py-1 rounded-md bg-secondary-fixed text-on-secondary-fixed-variant text-[11px] font-bold">
-                0 Errors
-              </span>
-            </div>
-          </div>
-
-          {/* Scandinavian Venue Context Graphic Badge */}
-          <div className="bg-surface-container-lowest rounded-2xl p-3 flex items-center gap-3 shadow-sm border border-outline-variant/20">
-            <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center overflow-hidden flex-shrink-0">
-              <img
-                className="w-full h-full object-cover"
-                alt="Architectural photograph of historic Grand Hotel Stockholm"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs18UI4iCh26rnHIjHaRasDw1ZFqCxgUIA3l8XuXZqdFeLxMiIlyqbzvZGk9lPU9VDbz_s_NzyJAb6dYTbns8qtqOTBhAchocjXmy_2SH0v7YD7StIfA3fMj4M93tkDxe2M59vsVEEWU7OI6_8UZHJpcalHHMIf_W0gHxVQMXGziGiksBZew8W0tT6YZ4o23paf-Pi8gj3TbNrlyyikKirmVZEvHvF1qR807Aae6uZp1J-vtunyZ0Cow"
-                loading="lazy"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs text-on-surface font-semibold truncate">Target Property Inventory</div>
-              <div className="text-[11px] text-on-surface-variant truncate">
-                Södra Blasieholmshamnen 8 · Deluxe Block Ready
-              </div>
-            </div>
-            <span className="material-symbols-outlined text-primary text-[20px]">domain</span>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: Verified Structured RFP Form / JSON View (7 Cols) */}
@@ -591,32 +549,6 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
               </pre>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Proposales API Integration Status Card */}
-      <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-outline-variant/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary flex-shrink-0">
-            <span className="material-symbols-outlined text-[22px]">api</span>
-          </div>
-          <div>
-            <div className="text-xs sm:text-sm text-on-surface font-semibold flex items-center gap-2 flex-wrap">
-              Ready to send to Proposales
-              <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container text-[11px] font-bold">
-                POST /v1/proposals
-              </span>
-            </div>
-            <div className="text-xs text-on-surface-variant">
-              Authenticated with active Grand Hôtel Stockholm API token credentials
-            </div>
-          </div>
-        </div>
-
-        {/* API Route Live Ping Indicator */}
-        <div className="flex items-center gap-2 text-on-surface-variant text-xs self-end sm:self-auto">
-          <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-          <span>Proposales Gateway: 18ms</span>
         </div>
       </div>
 
