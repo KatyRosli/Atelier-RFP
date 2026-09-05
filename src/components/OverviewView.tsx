@@ -3,6 +3,7 @@ import { ProposalItem } from "../types";
 
 interface OverviewViewProps {
   proposals: ProposalItem[];
+  firstName?: string;
   onStartVoice: () => void;
   onSelectProposal: (proposal: ProposalItem) => void;
   onReviewAiFields: (proposal: ProposalItem) => void;
@@ -11,6 +12,7 @@ interface OverviewViewProps {
 
 export const OverviewView: React.FC<OverviewViewProps> = ({
   proposals,
+  firstName,
   onStartVoice,
   onSelectProposal,
   onReviewAiFields,
@@ -43,7 +45,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
 
         <div className="mt-3">
-          <p className="text-[18px] text-on-surface-variant font-medium tracking-tight">Good afternoon, Elin</p>
+          <p className="text-[18px] text-on-surface-variant font-medium tracking-tight">
+            {firstName?.trim() ? `Hi ${firstName.trim()}` : "Hi"}
+          </p>
           <h1 className="text-[32px] sm:text-[36px] text-on-background font-bold tracking-tight mt-1 leading-tight">
             Turn a conversation into an RFP in seconds
           </h1>

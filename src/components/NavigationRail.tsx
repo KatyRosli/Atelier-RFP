@@ -23,7 +23,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
           <button
             onClick={() => onSelectTab("overview")}
             className="w-10 h-10 rounded-xl bg-inverse-surface flex items-center justify-center shadow-sm text-inverse-on-surface hover:scale-105 transition-all cursor-pointer"
-            title="Voice to RFP for Proposales"
+            title="Atelier RFP for Proposales"
             type="button"
           >
             <span className="material-symbols-outlined text-[20px]">graphic_eq</span>

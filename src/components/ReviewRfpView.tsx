@@ -47,17 +47,25 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
       const slug = clientName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       const finalUrl = data.url || `https://proposales.com/p/grand-hotel/${slug}-2027`;
 
+      const meetingSummary = payload.event.meetingFacilities?.length
+        ? payload.event.meetingFacilities.map((m) => `${m.space} (${m.durationDays} days, ${m.setupPreference})`).join(", ")
+        : "Plenary Meeting Facilities";
+
+      const cateringSummary = payload.event.catering?.length
+        ? payload.event.catering.map((c) => `${c.item}${c.quantity ? ` (x${c.quantity})` : ""}`).join(", ")
+        : "Standard Nordic Catering Package";
+
+      const formattedDates = `${payload.event.dates.checkIn} to ${payload.event.dates.checkOut} (${payload.event.dates.nights} nights)`;
+
       const newProposalItem: ProposalItem = {
-        id: data.id || "PRP-88492",
-        title: `${clientName} — Offsite`,
+        id: data.id || `PRP-${Math.floor(10000 + Math.random() * 90000)}`,
+        title: `${clientName} — ${payload.event.type || "Offsite"}`,
         clientName,
         contactName: payload.organization.contact.name,
         contactEmail: payload.organization.contact.email,
         contactPhone: payload.organization.contact.phone || "+46 70 123 45 67",
         guestsCount: payload.event.attendees,
-        datesText: `${new Date(payload.event.dates.checkIn).getDate()}–${new Date(
-          payload.event.dates.checkOut
-        ).getDate()} Mar 2027`,
+        datesText: formattedDates,
         checkIn: payload.event.dates.checkIn,
         checkOut: payload.event.dates.checkOut,
         nights: payload.event.dates.nights,
@@ -69,8 +77,8 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         createdAtFormatted: "Just now",
         proposalUrl: finalUrl,
         transcript,
-        meetingRooms: "Plenary Meeting Room (2 Full Days, Cabaret style)",
-        cateringSummary: "Breakfast (x2), Lunch (x2), 3-Course Welcome Dinner on Day 1",
+        meetingRooms: meetingSummary,
+        cateringSummary: cateringSummary,
         specialNotes: payload.event.specialDirectives,
         latencySeconds: 18.2,
         rawJson: payload,
@@ -79,30 +87,40 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
       onSubmitToProposales(payload, newProposalItem);
     } catch (e) {
       console.warn("Proposales dispatch fallback:", e);
-      // Construct verified proposal item
       const clientName = payload.organization.name;
+      const slug = clientName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const meetingSummary = payload.event.meetingFacilities?.length
+        ? payload.event.meetingFacilities.map((m) => `${m.space} (${m.durationDays} days, ${m.setupPreference})`).join(", ")
+        : "Plenary Meeting Facilities";
+
+      const cateringSummary = payload.event.catering?.length
+        ? payload.event.catering.map((c) => `${c.item}${c.quantity ? ` (x${c.quantity})` : ""}`).join(", ")
+        : "Standard Nordic Catering Package";
+
+      const formattedDates = `${payload.event.dates.checkIn} to ${payload.event.dates.checkOut} (${payload.event.dates.nights} nights)`;
+
       const newProposalItem: ProposalItem = {
-        id: "PRP-88492",
-        title: `${clientName} — Offsite`,
+        id: `PRP-${Math.floor(10000 + Math.random() * 90000)}`,
+        title: `${clientName} — ${payload.event.type || "Offsite"}`,
         clientName,
         contactName: payload.organization.contact.name,
         contactEmail: payload.organization.contact.email,
         contactPhone: payload.organization.contact.phone || "+46 70 123 45 67",
         guestsCount: payload.event.attendees,
-        datesText: "3–5 Mar 2027",
+        datesText: formattedDates,
         checkIn: payload.event.dates.checkIn,
         checkOut: payload.event.dates.checkOut,
         nights: payload.event.dates.nights,
         roomQuantity: payload.event.roomBlock.quantity,
-        roomType: `${payload.event.roomBlock.quantity} Double Deluxe Rooms`,
+        roomType: `${payload.event.roomBlock.quantity} ${payload.event.roomBlock.roomCategory} Rooms`,
         totalAmountSEK: payload.financials.totalBudgetSEK,
         marginPct: Math.round(payload.financials.estimatedMarginPct * 100),
         status: "sent_to_proposales",
         createdAtFormatted: "Just now",
-        proposalUrl: "https://proposales.com/p/grand-hotel/nordic-tech-offsite-2027",
+        proposalUrl: `https://proposales.com/p/grand-hotel/${slug}-2027`,
         transcript,
-        meetingRooms: "Plenary Meeting Room (2 Full Days, Cabaret style)",
-        cateringSummary: "Breakfast (x2), Lunch (x2), 3-Course Welcome Dinner on Day 1",
+        meetingRooms: meetingSummary,
+        cateringSummary: cateringSummary,
         specialNotes: payload.event.specialDirectives,
         latencySeconds: 18.2,
         rawJson: payload,

@@ -23,15 +23,24 @@ export default function App() {
       const saved = localStorage.getItem("user_profile");
       if (saved) {
         try {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved);
+          // If the profile was previously saved with the legacy template name "Alex", upgrade it to "Elin"
+          if (parsed && parsed.firstName === "Alex") {
+            parsed.firstName = "Elin";
+            if (parsed.email === "alex.lindell@grandhotel.se") {
+              parsed.email = "elin.lindell@grandhotel.se";
+            }
+            localStorage.setItem("user_profile", JSON.stringify(parsed));
+          }
+          return parsed;
         } catch {}
       }
     }
     return {
-      firstName: "Alex",
+      firstName: "Elin",
       lastName: "Lindell",
       companyName: "Grand Hôtel Stockholm",
-      email: "alex.lindell@grandhotel.se",
+      email: "elin.lindell@grandhotel.se",
     };
   });
 
@@ -86,10 +95,12 @@ export default function App() {
           onOpenProfile={() => setActiveTab("profile")}
         />
 
+        {/* Scrollable View Area with safe-area bottom padding for mobile bar */}
         <main className="flex-1 pt-16 pb-24 md:pb-12 w-full">
           {activeTab === "overview" && (
             <OverviewView
               proposals={proposals}
+              firstName={userProfile.firstName}
               onStartVoice={handleStartVoice}
               onSelectProposal={handleSelectProposal}
               onReviewAiFields={handleReviewAiFields}

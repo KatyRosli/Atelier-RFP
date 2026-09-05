@@ -7,16 +7,16 @@ interface AppHeaderProps {
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({ userProfile, onOpenProfile }) => {
-  const firstName = userProfile?.firstName || "Alex";
-  const lastName = userProfile?.lastName || "Lindell";
-  const companyName = userProfile?.companyName || "Grand Hôtel Stockholm";
-  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  const firstName = userProfile?.firstName?.trim() || "Elin";
+  const lastName = userProfile?.lastName?.trim() || "Lindell";
+  const companyName = userProfile?.companyName?.trim() || "Grand Hôtel Stockholm";
+  const initials = `${firstName.charAt(0) || "E"}${lastName.charAt(0) || "L"}`.toUpperCase();
 
   return (
     <header className="fixed top-0 left-0 md:left-[4.5rem] right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-3 sm:px-6 border-b border-outline-variant/30">
       <div className="flex items-center gap-2 min-w-0">
         <span className="text-[16px] sm:text-[17px] font-bold text-on-surface tracking-tight truncate">
-          Voice to RFP
+          Atelier RFP
         </span>
         <span className="hidden xs:inline text-on-surface-variant text-[12px] sm:text-[13px] opacity-70 truncate">
           for Proposales

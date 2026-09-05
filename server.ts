@@ -2,9 +2,10 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
-import { generateObject } from "ai";
+import { generateObject, generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { GoogleGenAI } from "@google/genai";
+import { z } from "zod";
 import { RfpPayloadSchema, RfpPayload } from "./src/types";
 
 // Load environment variables from .env.local first, then fallback to .env
@@ -18,6 +19,25 @@ app.use(express.json());
 
 // In-memory proposal storage for dynamic session tracking
 let storedProposals: any[] = [];
+
+// LLMs commonly emit `null` for fields not mentioned in the transcript, but
+// zod's `.default()` only fills in `undefined` - a `null` fails validation
+// outright and discards the entire (otherwise correct) payload. Recursively
+// convert `null` to `undefined` so per-field defaults can kick in instead.
+function nullsToUndefined<T>(value: T): T {
+  if (value === null) return undefined as unknown as T;
+  if (Array.isArray(value)) {
+    return value.map((v) => nullsToUndefined(v)) as unknown as T;
+  }
+  if (value && typeof value === "object") {
+    const result: Record<string, unknown> = {};
+    for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
+      result[key] = nullsToUndefined(v);
+    }
+    return result as T;
+  }
+  return value;
+}
 
 // Helper heuristic fallback extractor
 function extractWithHeuristics(transcript: string): RfpPayload {
@@ -145,6 +165,58 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Schema tailored specifically for OpenAI Strict Structured Outputs (all properties in required array)
+const AiExtractionSchema = z.object({
+  organization: z.object({
+    name: z.string().describe("Company or client organization name"),
+    contact: z.object({
+      name: z.string().describe("Contact person full name"),
+      email: z.string().describe("Contact email address"),
+      phone: z.string().describe("Contact phone number"),
+    }),
+  }),
+  event: z.object({
+    type: z.string().describe("Event type e.g. Executive Offsite & Conference"),
+    dates: z.object({
+      checkIn: z.string().describe("ISO format date YYYY-MM-DD"),
+      checkOut: z.string().describe("ISO format date YYYY-MM-DD"),
+      nights: z.number().describe("Duration in nights"),
+    }),
+    attendees: z.number().describe("Total guest / attendee count"),
+    roomBlock: z.object({
+      quantity: z.number().describe("Number of rooms"),
+      roomCategory: z.string().describe("Room category e.g. Double Deluxe, Superior"),
+    }),
+    meetingFacilities: z.array(
+      z.object({
+        space: z.string().describe("Meeting space e.g. Plenary Hall"),
+        durationDays: z.number().describe("Duration in days"),
+        avRequirements: z.array(z.string()).describe("Audio visual items"),
+        setupPreference: z.string().describe("Setup style e.g. Cabaret, Theater"),
+      })
+    ),
+    catering: z.array(
+      z.object({
+        item: z.string().describe("Catering item e.g. Breakfast, Lunch, 3-Course Dinner"),
+        quantity: z.number().describe("Quantity or pax"),
+        day: z.number().describe("Event day number e.g. 1 or 2"),
+      })
+    ),
+    specialDirectives: z.string().describe("Special notes, setup instructions, or dietary requirements"),
+  }),
+  financials: z.object({
+    totalBudgetSEK: z.number().describe("Total budget in Swedish Kronor (SEK)"),
+    estimatedMarginPct: z.number().describe("Estimated margin percentage e.g. 0.34"),
+    currency: z.literal("SEK"),
+  }),
+  meta: z.object({
+    parser: z.string(),
+    model: z.string(),
+    confidenceScore: z.number(),
+    hotelTenantId: z.string(),
+  }),
+});
+
 // AI Data Extraction: Vercel AI SDK / LLM with Zod Schema
 app.post("/api/extract", async (req, res) => {
   try {
@@ -160,17 +232,57 @@ app.post("/api/extract", async (req, res) => {
           apiKey: process.env.OPENAI_API_KEY,
         });
 
-        const { object } = await generateObject({
-          model: openai("gpt-4o-mini"),
-          schema: RfpPayloadSchema,
-          prompt: `You are an expert hospitality sales AI for Grand Hôtel Stockholm.
-Extract structured RFP event parameters from the following spoken voice transcript into the exact Zod schema.
+        let parsedResult: any = null;
+
+        // Attempt A: Strict Schema compliance with AiExtractionSchema
+        try {
+          const { object } = await generateObject({
+            model: openai("gpt-4o-mini"),
+            schema: AiExtractionSchema,
+            prompt: `You are an expert hospitality sales AI for Grand Hôtel Stockholm.
+Extract structured RFP event parameters from the following spoken voice transcript into the exact schema.
+If specific fields (such as contact phone, email, or guest count) were not explicitly mentioned, provide realistic professional placeholders based on the company and context.
 Ensure all Swedish dates, room blocks, catering, meeting requirements, and SEK budgets are accurately parsed.
 
 Transcript: "${transcript}"`,
-        });
+          });
+          parsedResult = object;
+        } catch (strictErr) {
+          console.warn("Strict structured outputs failed, falling back to generateText JSON generation:", strictErr);
+          // Attempt B: standard completion with JSON parsing (bypasses strict schema validation)
+          const { text } = await generateText({
+            model: openai("gpt-4o-mini"),
+            prompt: `You are an expert hospitality sales AI for Grand Hôtel Stockholm.
+Extract structured RFP event parameters from the following spoken voice transcript into a valid JSON object.
+Schema structure:
+{
+  "organization": { "name": string, "contact": { "name": string, "email": string, "phone": string } },
+  "event": {
+    "type": string,
+    "dates": { "checkIn": "YYYY-MM-DD", "checkOut": "YYYY-MM-DD", "nights": number },
+    "attendees": number,
+    "roomBlock": { "quantity": number, "roomCategory": string },
+    "meetingFacilities": [{ "space": string, "durationDays": number, "avRequirements": string[], "setupPreference": string }],
+    "catering": [{ "item": string, "quantity": number, "day": number }],
+    "specialDirectives": string
+  },
+  "financials": { "totalBudgetSEK": number, "estimatedMarginPct": number, "currency": "SEK" },
+  "meta": { "parser": "vercel-ai-sdk", "model": "gpt-4o-mini", "confidenceScore": 0.98, "hotelTenantId": "grand-hotel-stockholm" }
+}
+Return only pure JSON without markdown.
+Transcript: "${transcript}"`,
+          });
+          const cleaned = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+          parsedResult = JSON.parse(cleaned);
+        }
 
-        return res.json({ success: true, payload: object, provider: "vercel-ai-sdk-gpt-4o-mini" });
+        if (parsedResult) {
+          const validated = RfpPayloadSchema.parse(nullsToUndefined({
+            $schema: "https://api.proposales.com/v1/schemas/rfp-intake.json",
+            ...parsedResult,
+          }));
+          return res.json({ success: true, payload: validated, provider: "vercel-ai-sdk-gpt-4o-mini" });
+        }
       } catch (openaiErr) {
         console.warn("Vercel AI SDK OpenAI extraction failed, falling back to Gemini:", openaiErr);
       }
@@ -206,25 +318,33 @@ Extract structured RFP event information from the following transcript into stri
     "currency": "SEK"
   },
   "meta": {
-    "parser": "vercel-ai-sdk@4.1",
-    "model": "gpt-4o-mini",
+    "parser": "gemini-api@2.4",
+    "model": "gemini-3.6-flash",
     "confidenceScore": 0.98,
     "hotelTenantId": "grand-hotel-stockholm"
   }
 }
 Return valid JSON only without markdown code blocks.`;
 
-        const response = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          contents: `${systemPrompt}\n\nTranscript: "${transcript}"`,
-        });
+        let response: any;
+        try {
+          response = await ai.models.generateContent({
+            model: "gemini-3.6-flash",
+            contents: `${systemPrompt}\n\nTranscript: "${transcript}"`,
+          });
+        } catch (mErr) {
+          response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `${systemPrompt}\n\nTranscript: "${transcript}"`,
+          });
+        }
 
         let jsonText = response.text || "";
         // Clean markdown backticks if any
         jsonText = jsonText.replace(/```json/gi, "").replace(/```/g, "").trim();
         const parsed = JSON.parse(jsonText);
         const validated = RfpPayloadSchema.parse(parsed);
-        return res.json({ success: true, payload: validated, provider: "llm-structured" });
+        return res.json({ success: true, payload: validated, provider: "gemini-structured" });
       } catch (aiErr) {
         console.warn("Gemini extraction failed, falling back to heuristic parsing:", aiErr);
       }
