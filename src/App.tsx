@@ -23,7 +23,7 @@ const TAB_TO_PATH: Record<NavTab, string> = {
   "overview": "/",
   "voice-capture": "/voice",
   "review-rfp": "/review",
-  "proposal-created": "/proposal-created",
+  "proposal-created": "/proposals",
   "rfp-history": "/history",
   "profile": "/profile",
 };
@@ -76,10 +76,16 @@ const ProposalCreatedRoute: React.FC<ProposalCreatedRouteProps> = ({
   return <Navigate to="/" replace />;
 };
 
+// Redirects old-style /proposal-created/:id links to the canonical /proposals/:id
+const LegacyProposalRedirect: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={`/proposals/${id}`} replace />;
+};
+
 export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const activeTab: NavTab = location.pathname.startsWith("/proposal-created")
+  const activeTab: NavTab = location.pathname.startsWith("/proposals")
     ? "proposal-created"
     : PATH_TO_TAB[location.pathname] || "overview";
   const goToTab = (tab: NavTab) => navigate(TAB_TO_PATH[tab]);
@@ -146,12 +152,12 @@ export default function App() {
   const handleSubmitToProposales = (payload: RfpPayload, liveProposal: ProposalItem) => {
     setProposals((prev) => [liveProposal, ...prev.filter((p) => p.id !== liveProposal.id)]);
     setActiveProposal(liveProposal);
-    navigate(`/proposal-created/${liveProposal.id}`);
+    navigate(`/proposals/${liveProposal.id}`);
   };
 
   const handleSelectProposal = (proposal: ProposalItem) => {
     setActiveProposal(proposal);
-    navigate(`/proposal-created/${proposal.id}`);
+    navigate(`/proposals/${proposal.id}`);
   };
 
   const handleReviewAiFields = (proposal: ProposalItem) => {
@@ -219,7 +225,7 @@ export default function App() {
             />
 
             <Route
-              path="/proposal-created/:id"
+              path="/proposals/:id"
               element={
                 <ProposalCreatedRoute
                   proposals={proposals}
@@ -230,6 +236,9 @@ export default function App() {
                 />
               }
             />
+
+            {/* Legacy path from before the /proposal-created -> /proposals rename */}
+            <Route path="/proposal-created/:id" element={<LegacyProposalRedirect />} />
 
             <Route
               path="/history"

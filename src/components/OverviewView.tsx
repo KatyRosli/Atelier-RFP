@@ -36,8 +36,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       {/* Header & Salutation Section */}
       <div className="flex flex-col gap-1 mb-8">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary text-[11px] font-semibold uppercase tracking-wider">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 py-1 text-primary text-[11px] font-semibold tracking-wider">
             Sales Manager
           </span>
           <span className="text-on-surface-variant/40 text-xs">/</span>
@@ -99,12 +98,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
             {/* Right: Status indicator pills */}
             <div className="flex flex-wrap md:flex-col lg:flex-row items-start md:items-end gap-2 flex-shrink-0 pt-2 md:pt-0">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-[11px] font-medium">
-                <span className="material-symbols-outlined text-[14px] text-primary">sensors</span>
-                Browser Web Speech API ready
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-container text-[11px] font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+              <span className="inline-flex items-center text-on-secondary-container text-[11px] font-semibold">
                 Live auto-sync
               </span>
             </div>

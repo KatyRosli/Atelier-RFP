@@ -39,21 +39,12 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="inline-flex items-center gap-2 mb-1">
-            <span className="text-xs uppercase tracking-widest text-primary font-bold">RFP Repository</span>
+            <span className="text-xs tracking-widest text-primary font-bold">RFP Repository</span>
             <span className="text-on-surface-variant opacity-40">/</span>
-            <span className="text-xs text-on-surface-variant">Grand Hôtel Stockholm</span>
+            <span className="text-on-surface-variant text-xs font-medium">Noir Hôtel Stockholm</span>
           </div>
           <h1 className="text-[28px] font-bold text-on-surface tracking-tight">Proposals &amp; Intakes</h1>
         </div>
-
-        <button
-          onClick={onStartVoice}
-          className="h-10 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-2 shadow-sm transition-all self-start sm:self-auto cursor-pointer"
-          type="button"
-        >
-          <span className="material-symbols-outlined text-[18px]">mic</span>
-          <span>New Voice Intake</span>
-        </button>
       </div>
 
       {/* Filter and Search Bar */}

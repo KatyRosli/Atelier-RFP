@@ -98,7 +98,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
         <button
           onClick={() => onSelectTab("overview")}
           className={`flex flex-col items-center justify-center min-h-[44px] min-w-[48px] px-1 rounded-xl transition-colors cursor-pointer ${
-            activeTab === "overview" ? "text-primary font-bold" : "text-on-surface-variant hover:text-on-surface"
+            activeTab === "overview" ? "text-primary font-bold" : "text-on-primary-container"
           }`}
           type="button"
           aria-label="Home Overview"
@@ -128,7 +128,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
         <button
           onClick={() => onSelectTab("rfp-history")}
           className={`flex flex-col items-center justify-center min-h-[44px] min-w-[48px] px-1 rounded-xl transition-colors cursor-pointer ${
-            activeTab === "rfp-history" ? "text-primary font-bold" : "text-on-surface-variant hover:text-on-surface"
+            activeTab === "rfp-history" ? "text-primary font-bold" : "text-on-primary-container"
           }`}
           type="button"
           aria-label="RFP History"

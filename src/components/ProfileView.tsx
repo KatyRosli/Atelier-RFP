@@ -155,11 +155,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     <div className="flex flex-col w-full max-w-[800px] mx-auto py-6 sm:py-8 px-4 sm:px-6">
       {/* Top Header */}
       <div className="mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 mb-1.5">
-          <span className="text-xs uppercase tracking-widest text-primary font-bold">Sales Lead</span>
-          <span className="text-on-surface-variant opacity-40">/</span>
-          <span className="text-xs text-on-surface-variant">Account &amp; Appearance</span>
-        </div>
         <h1 className="text-[26px] sm:text-[30px] font-bold text-on-surface tracking-tight">
           Profile &amp; Preferences
         </h1>

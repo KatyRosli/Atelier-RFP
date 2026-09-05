@@ -65,12 +65,6 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
               <span className="material-symbols-outlined text-[32px]">task_alt</span>
             </div>
             <div>
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container text-[11px] font-bold uppercase tracking-wider">
-                  201 Created
-                </span>
-                <span className="text-xs text-on-surface-variant font-mono">ID: {proposal.id}</span>
-              </div>
               <h1 className="text-[24px] sm:text-[28px] font-bold text-on-surface tracking-tight">
                 Proposal Created in Proposales!
               </h1>
@@ -80,13 +74,6 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
                 <strong className="text-primary font-semibold">{proposal.totalAmountSEK.toLocaleString()} SEK</strong>
               </p>
             </div>
-          </div>
-
-          <div className="flex sm:flex-col items-end gap-2 shrink-0">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-xs font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-              Proposales Live Synced
-            </span>
           </div>
         </div>
       </div>
@@ -98,8 +85,8 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             <span className="material-symbols-outlined text-primary text-[20px]">link</span>
             <h2 className="text-sm font-semibold text-on-surface">Client Public Proposal Link</h2>
           </div>
-          <span className="text-xs text-secondary font-semibold flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+          <span className="text-xs text-emerald-800 font-semibold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-800" />
             Active &amp; Ready to Sign
           </span>
         </div>
@@ -115,7 +102,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             <button
               id="btn-view-pdf-created"
               onClick={() => setIsPdfModalOpen(true)}
-              className="h-10 px-3.5 sm:px-4 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              className="h-10 px-3.5 sm:px-4 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-on-primary text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               type="button"
               title="Preview and print official proposal PDF"
             >
@@ -162,7 +149,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
           </div>
           <div className="flex flex-col">
             <span className="text-[11px] text-on-surface-variant">Validity</span>
-            <span className="font-semibold text-secondary mt-0.5">Valid Until 15 Jan 2027</span>
+            <span className="font-semibold text-emerald-800 mt-0.5">Valid Until 15 Jan 2027</span>
           </div>
         </div>
       </div>
@@ -179,7 +166,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             className="flex items-center gap-3 p-3.5 rounded-xl bg-secondary-container/30 hover:bg-secondary-container/60 transition-colors group cursor-pointer border border-secondary/20 text-left"
             type="button"
           >
-            <div className="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-secondary-container text-on-primary flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
             </div>
             <div className="flex flex-col min-w-0">
@@ -368,27 +355,6 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Bottom Action Navigation */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <button
-          onClick={onReturnDashboard}
-          className="w-full sm:w-auto h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
-          type="button"
-        >
-          <span className="material-symbols-outlined text-[18px]">home</span>
-          <span>Return to Dashboard</span>
-        </button>
-
-        <button
-          onClick={onCreateAnother}
-          className="w-full sm:w-auto h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
-          type="button"
-        >
-          <span className="material-symbols-outlined text-[18px]">mic</span>
-          <span>Create Another Voice RFP</span>
-        </button>
       </div>
 
       {/* Email Modal */}

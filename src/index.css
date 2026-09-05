@@ -61,36 +61,36 @@
   color-scheme: light;
 
   /* LIGHT THEME: Strict WCAG AA & AAA Compliance */
-  --bg-app: #f8fafc;
+  --bg-app: #EBE0DA;
   --bg-surface: #f8fafc;
   --bg-surface-bright: #ffffff;
-  --bg-surface-dim: #e2e8f0;
+  --bg-surface-dim: #161415;
   --bg-surface-container-lowest: #ffffff;
   --bg-surface-container-low: #f1f5f9;
-  --bg-surface-container: #e2e8f0;
-  --bg-surface-container-high: #cbd5e1;
-  --bg-surface-container-highest: #94a3b8;
+  --bg-surface-container: #E7E1E2;
+  --bg-surface-container-high: #AFAAAB;
+  --bg-surface-container-highest: #E7E1E2;
   --bg-surface-variant: #f1f5f9;
 
-  --color-brand-primary: #182c54;
-  --color-brand-primary-container: #dfe5f1;
-  --color-brand-primary-fixed: #e5eaf5;
-  --color-brand-primary-fixed-dim: #b3c3e6;
-  --color-brand-on-primary: #ffffff;
-  --color-brand-on-primary-container: #182c54;
-  --color-brand-on-primary-fixed: #182c54;
-  --color-brand-on-primary-fixed-variant: #1c2f54;
+  --color-brand-primary: #2E1A24;
+  --color-brand-primary-container: #FCD9E7;
+  --color-brand-primary-fixed: #DFBECB;
+  --color-brand-primary-fixed-dim: #C2A3B0;
+  --color-brand-on-primary: #FFFFFF;
+  --color-brand-on-primary-container: #2E1A24;   /* 12.6:1 (WCAG AAA) - was #9d7687 at 3.02:1 (fail) */
+  --color-brand-on-primary-fixed: #402A34;
+  --color-brand-on-primary-fixed-variant: #422432; /* 6.0:1 vs fixed-dim (WCAG AA) - was #715763 at 2.82:1 (fail) */
 
-  --color-brand-secondary: #1e293b;
-  --color-brand-secondary-container: #e1e6ef;
-  --color-brand-secondary-fixed: #e8ecf2;
-  --color-brand-secondary-fixed-dim: #bcc8dc;
-  --color-brand-on-secondary: #ffffff;
-  --color-brand-on-secondary-container: #1e293b;
-  --color-brand-on-secondary-fixed: #1e293b;
-  --color-brand-on-secondary-fixed-variant: #232f43;
+  --color-brand-secondary: #5a483f;   /* 8.6:1 vs white (WCAG AAA) - was #F2DFD5 at 1.29:1 (fail) */
+  --color-brand-secondary-container: #f0e5e0;   /* 7.6:1 vs on-secondary-container (WCAG AAA) - was #7C6D65 at 1.89:1 (fail) */
+  --color-brand-secondary-fixed: #B9A89F;
+  --color-brand-secondary-fixed-dim: #9E8D85;
+  --color-brand-on-secondary: #FFFFFF;
+  --color-brand-on-secondary-container: #51443D;
+  --color-brand-on-secondary-fixed: #3A2E27;
+  --color-brand-on-secondary-fixed-variant: #2E1A24; /* 5.1:1 vs fixed-dim (WCAG AA) - was #51443D at 2.94:1 (fail) */
 
-  --color-brand-tertiary: #9a3412;
+  --color-brand-tertiary: #716965;   /* 5.4:1 vs white (WCAG AA) - was #7E7571 at 4.50:1 (fail, just under AA) */
   --color-brand-tertiary-container: #ffedd5;
   --color-brand-tertiary-fixed: #fed7aa;
   --color-brand-tertiary-fixed-dim: #fdba74;
@@ -102,42 +102,42 @@
   --color-brand-on-error: #ffffff;
   --color-brand-on-error-container: #7f1d1d;
 
-  --color-brand-outline: #64748b;
-  --color-brand-outline-variant: #cbd5e1;
-  --color-brand-on-surface: #0f172a;
-  --color-brand-on-surface-variant: #334155;
-  --color-brand-on-background: #0f172a;
+  --color-brand-outline: #8d7468;   /* 3.4:1 vs bg-app (WCAG 1.4.11 non-text UI) - was #FCD9E7 at 1.00:1 (fail, invisible) */
+  --color-brand-outline-variant: #B9A89F;
+  --color-brand-on-surface: #2E1A24;
+  --color-brand-on-surface-variant: #2E1A24;
+  --color-brand-on-background: #2E1A24;
 
-  --color-brand-inverse-surface: #1e293b;
+  --color-brand-inverse-surface: #2E1A24;
   --color-brand-inverse-on-surface: #f8fafc;
-  --color-brand-inverse-primary: #9db6e7;
+  --color-brand-inverse-primary: #B9A89F;
 }
 
 html.dark, :root.dark {
   color-scheme: dark;
 
   /* DARK THEME: Strict WCAG AA & AAA Compliance */
-  --bg-app: #0b0f19;
-  --bg-surface: #0b0f19;
+  --bg-app: #1F1A1D;
+  --bg-surface: #000000;
   --bg-surface-bright: #151d2e;
   --bg-surface-dim: #070a12;
-  --bg-surface-container-lowest: #111827;
-  --bg-surface-container-low: #172033;
+  --bg-surface-container-lowest: #000000;
+  --bg-surface-container-low: #392D34;
   --bg-surface-container: #1e293b;
   --bg-surface-container-high: #283548;
   --bg-surface-container-highest: #334155;
   --bg-surface-variant: #1e293b;
 
-  --color-brand-primary: #8da9e2;
+  --color-brand-primary: #B5829A;
   --color-brand-primary-container: #264073;
   --color-brand-primary-fixed: #e5eaf5;
-  --color-brand-primary-fixed-dim: #b3c3e6;
+  --color-brand-primary-fixed-dim: #FFD8E8;
   --color-brand-on-primary: #101d37;
   --color-brand-on-primary-container: #e5eaf5;
   --color-brand-on-primary-fixed: #182c54;
   --color-brand-on-primary-fixed-variant: #1c2f54;
 
-  --color-brand-secondary: #98accd;
+  --color-brand-secondary: #A39288;
   --color-brand-secondary-container: #33435b;
   --color-brand-secondary-fixed: #e8ecf2;
   --color-brand-secondary-fixed-dim: #bcc8dc;
