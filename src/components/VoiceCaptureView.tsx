@@ -4,7 +4,7 @@ import { apiUrl } from "../lib/api.ts";
 
 interface VoiceCaptureViewProps {
   onCancel: () => void;
-  onExtracted: (payload: RfpPayload, transcript: string, durationSeconds: number) => void;
+  onExtracted: (payload: RfpPayload, transcript: string, durationSeconds: number, language: "en" | "sv") => void;
 }
 
 const SAMPLE_NORDIC_TECH =
@@ -260,13 +260,13 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
       const data = await res.json();
       if (!data.payload) throw new Error("No payload returned");
 
-      onExtracted(data.payload, fullText, Math.max(seconds, 3));
+      onExtracted(data.payload, fullText, Math.max(seconds, 3), language);
     } catch (err: any) {
       console.warn("Server extraction notice, using dynamic parser:", err);
 
       // Fallback: Parse the user's ACTUAL spoken words dynamically
       const dynamicPayload = parseUserTranscriptLocally(fullText);
-      onExtracted(dynamicPayload, fullText, Math.max(seconds, 3));
+      onExtracted(dynamicPayload, fullText, Math.max(seconds, 3), language);
     } finally {
       setIsExtracting(false);
     }

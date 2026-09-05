@@ -34,6 +34,7 @@ export async function getProposals(userId?: string): Promise<ProposalItem[]> {
       specialNotes: r.specialNotes || undefined,
       latencySeconds: r.latencySeconds || undefined,
       rawJson: r.rawJson ? JSON.parse(r.rawJson) : undefined,
+      externalSync: r.externalSync ?? false,
     }));
   } catch (error) {
     console.error("Database query failed in getProposals:", error);
@@ -71,6 +72,7 @@ export async function upsertProposal(item: ProposalItem, userId: string): Promis
         specialNotes: item.specialNotes,
         latencySeconds: item.latencySeconds,
         rawJson: rawJsonStr,
+        externalSync: item.externalSync ?? false,
       })
       .onConflictDoUpdate({
         target: proposals.id,
@@ -98,6 +100,7 @@ export async function upsertProposal(item: ProposalItem, userId: string): Promis
           specialNotes: item.specialNotes,
           latencySeconds: item.latencySeconds,
           rawJson: rawJsonStr,
+          externalSync: item.externalSync ?? false,
         },
       });
 

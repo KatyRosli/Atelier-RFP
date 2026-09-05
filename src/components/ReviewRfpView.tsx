@@ -16,6 +16,7 @@ function formatCreatedAt(): string {
 interface ReviewRfpViewProps {
   payload: RfpPayload;
   transcript: string;
+  language?: "en" | "sv";
   onReRecord: () => void;
   onSubmitToProposales: (payload: RfpPayload, liveProposal: ProposalItem) => void;
 }
@@ -23,6 +24,7 @@ interface ReviewRfpViewProps {
 export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   payload: initialPayload,
   transcript,
+  language,
   onReRecord,
   onSubmitToProposales,
 }) => {
@@ -91,7 +93,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
       const res = await fetch(apiUrl("/api/proposals"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload, item: preliminaryItem }),
+        body: JSON.stringify({ payload, item: preliminaryItem, language: language || "en" }),
       });
 
       if (res.ok) {

@@ -452,7 +452,7 @@ const ApiDiagnosticsWidget: React.FC = () => {
         {/* Proposales Key */}
         <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant">PROPOSALES_API_KEY</span>
+            <span className="text-[10px] uppercase font-bold text-on-surface-variant">PROPOSALES_INBOX_TOKEN</span>
             {healthData?.hasProposalesKey ? (
               <span className="w-2 h-2 rounded-full bg-secondary" title="Live key active" />
             ) : (

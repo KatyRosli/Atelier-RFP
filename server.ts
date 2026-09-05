@@ -160,8 +160,39 @@ app.get("/api/health", (req, res) => {
     tenant: "Noir Hôtel Stockholm",
     hasGeminiKey: !!process.env.GEMINI_API_KEY,
     hasOpenAIKey: !!process.env.OPENAI_API_KEY,
-    hasProposalesKey: !!process.env.PROPOSALES_API_KEY,
+    hasProposalesKey: !!process.env.PROPOSALES_INBOX_TOKEN,
   });
+});
+
+// Real account info from Proposales (GET /v3/companies). Note: their API exposes
+// company-level data only (name, currency, timezone, website_url, logo_url) - there
+// is no "current user" endpoint, so an individual person's name/email can't be fetched.
+app.get("/api/proposales/company", async (_req, res) => {
+  const apiKey = process.env.PROPOSALES_API_KEY;
+  if (!apiKey) {
+    return res.status(404).json({ error: "PROPOSALES_API_KEY not configured" });
+  }
+  try {
+    const response = await fetch("https://api.proposales.com/v3/companies", {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Failed to fetch company info from Proposales" });
+    }
+    const { data } = await response.json();
+    const company = data?.[0];
+    if (!company) {
+      return res.status(404).json({ error: "No company found for this API key" });
+    }
+    res.json({
+      name: company.name,
+      websiteUrl: company.website_url,
+      currency: company.currency,
+    });
+  } catch (err) {
+    console.warn("Proposales company lookup failed:", err);
+    res.status(502).json({ error: "Could not reach Proposales API" });
+  }
 });
 
 // Schema tailored specifically for OpenAI Strict Structured Outputs (all properties in required array)
@@ -378,8 +409,7 @@ app.post("/api/proposals", async (req, res) => {
     const uid = DEFAULT_USER_ID;
     await getOrCreateUser(uid, DEFAULT_USER_EMAIL);
 
-    const { payload, item, apiKeyOverride } = req.body;
-    const apiKey = apiKeyOverride || process.env.PROPOSALES_API_KEY;
+    const { payload, item, language } = req.body;
 
     const proposalId = item?.id || `PRP-${Math.floor(10000 + Math.random() * 90000)}`;
     const clientName = payload?.organization?.name || item?.clientName || "Nordic Tech AB";
@@ -387,44 +417,20 @@ app.post("/api/proposals", async (req, res) => {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
+    // This app's own placeholder link for its local demo UI (PDF preview, share buttons).
+    // Overwritten below with a real Proposales URL when the Create Proposal call succeeds.
     const generatedUrl = item?.proposalUrl || `https://proposales.com/p/grand-hotel/${slug}-2027`;
 
-    // If a real PROPOSALES_API_KEY is available, attempt the live external call
-    let externalApiResponse = null;
-    if (apiKey && apiKey !== "xxxx") {
-      try {
-        const response = await fetch("https://api.proposales.com/v1/proposals", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            title: `${clientName} Offsite`,
-            tenant_id: "noir-hotel-stockholm",
-            currency: payload?.financials?.currency || "SEK",
-            total_price: payload?.financials?.totalBudgetSEK || item?.totalAmountSEK || 450000,
-            recipient: {
-              name: payload?.organization?.contact?.name || item?.contactName,
-              email: payload?.organization?.contact?.email || item?.contactEmail,
-              phone: payload?.organization?.contact?.phone || item?.contactPhone,
-            },
-            data: payload,
-          }),
-        });
-
-        if (response.ok) {
-          externalApiResponse = await response.json();
-        } else {
-          console.warn("Proposales external API call returned status:", response.status);
-        }
-      } catch (extErr) {
-        console.warn("External Proposales API request failed, using local live proxy link:", extErr);
-      }
-    }
-
-    const finalId = externalApiResponse?.id || proposalId;
-    const finalUrl = externalApiResponse?.url || generatedUrl;
+    const language_ = language === "sv" ? "sv" : "en";
+    const contactName = payload?.organization?.contact?.name || item?.contactName || "";
+    const [firstName, ...restName] = contactName.split(" ");
+    const contactEmail = payload?.organization?.contact?.email || item?.contactEmail;
+    const contactPhone = payload?.organization?.contact?.phone || item?.contactPhone;
+    const attendees = payload?.event?.attendees ?? item?.guestsCount ?? 60;
+    const roomQuantity = payload?.event?.roomBlock?.quantity ?? item?.roomQuantity ?? 30;
+    const roomCategory = payload?.event?.roomBlock?.roomCategory || "Double Deluxe";
+    const nights = payload?.event?.dates?.nights ?? item?.nights ?? 2;
+    const totalBudgetSEK = payload?.financials?.totalBudgetSEK ?? item?.totalAmountSEK ?? 450000;
 
     const meetingSummary = payload?.event?.meetingFacilities?.length
       ? payload.event.meetingFacilities.map((m: any) => `${m.space} (${m.durationDays} days, ${m.setupPreference})`).join(", ")
@@ -437,6 +443,128 @@ app.post("/api/proposals", async (req, res) => {
     const formattedDates = payload?.event?.dates
       ? `${payload.event.dates.checkIn} to ${payload.event.dates.checkOut} (${payload.event.dates.nights} nights)`
       : item?.datesText || "2027-03-03 to 2027-03-05 (2 nights)";
+
+    let finalId = proposalId;
+    let finalUrl = generatedUrl;
+    let submittedToProposales = false;
+
+    const apiKey = process.env.PROPOSALES_API_KEY;
+    const companyId = process.env.PROPOSALES_COMPANY_ID;
+    const inboxToken = process.env.PROPOSALES_INBOX_TOKEN;
+    const isTestSubmission = process.env.PROPOSALES_IS_TEST !== "false";
+
+    if (apiKey && companyId) {
+      // Author a real proposal directly (requires Bearer auth + company_id). Pricing
+      // mirrors the same per-unit rates used in the local PDF preview, so both are consistent.
+      const conferenceDays = payload?.event?.meetingFacilities?.length
+        ? payload.event.meetingFacilities.reduce((sum: number, m: any) => sum + (m.durationDays || 1), 0)
+        : 2;
+      const cateringOccasions = payload?.event?.catering?.length || 1;
+
+      try {
+        const response = await fetch("https://api.proposales.com/v3/proposals", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            company_id: Number(companyId),
+            language: language_,
+            title_md: `${clientName} — ${payload?.event?.type || "Offsite"}`,
+            description_md: item?.transcript ? `Captured from voice request:\n\n${item.transcript}` : undefined,
+            recipient: contactEmail
+              ? { first_name: firstName || undefined, last_name: restName.join(" ") || undefined, email: contactEmail, phone: contactPhone, company_name: clientName }
+              : undefined,
+            blocks: [
+              {
+                type: "product-block",
+                title: `${roomCategory} Accommodation`,
+                description: `${nights} nights inclusive of breakfast`,
+                currency: "SEK",
+                quantity: roomQuantity * nights,
+                unit_value_without_discount_with_tax: 3200,
+              },
+              {
+                type: "product-block",
+                title: "Conference Package & A/V",
+                description: meetingSummary,
+                currency: "SEK",
+                quantity: attendees * conferenceDays,
+                unit_value_without_discount_with_tax: 1250,
+              },
+              {
+                type: "product-block",
+                title: "Catering",
+                description: cateringSummary,
+                currency: "SEK",
+                quantity: attendees * cateringOccasions,
+                unit_value_without_discount_with_tax: 1850,
+              },
+            ],
+          }),
+        });
+
+        if (response.ok) {
+          const { proposal } = await response.json();
+          if (proposal?.url) {
+            finalUrl = proposal.url;
+            finalId = proposal.uuid || finalId;
+            submittedToProposales = true;
+            console.log("Created real Proposales proposal:", proposal.url);
+          }
+        } else {
+          const errorText = await response.text();
+          console.warn(`Proposales Create Proposal API returned ${response.status}:`, errorText);
+        }
+      } catch (extErr) {
+        console.warn("Proposales Create Proposal request failed:", extErr);
+      }
+    } else if (inboxToken) {
+      // Fallback: no company_id available, so just file the request into the public
+      // inbox instead (POST /v1/inbox/{token}) - no auth, no client-facing URL returned.
+      try {
+        const messageLines = [
+          `Event type: ${payload?.event?.type || "N/A"}`,
+          `Guests: ${attendees}`,
+          `Rooms: ${roomQuantity} ${roomCategory}`.trim(),
+          `Meeting facilities: ${meetingSummary}`,
+          `Catering: ${cateringSummary}`,
+          payload?.event?.specialDirectives ? `Special directives: ${payload.event.specialDirectives}` : null,
+          `Budget: ${totalBudgetSEK} SEK`,
+          "",
+          `Original voice transcript: ${item?.transcript || ""}`,
+        ].filter(Boolean);
+
+        const response = await fetch(`https://api.proposales.com/v1/inbox/${inboxToken}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: contactEmail,
+            company_name: clientName,
+            first_name: firstName || undefined,
+            last_name: restName.join(" ") || undefined,
+            phone_number: contactPhone,
+            message: messageLines.join("\n"),
+            language: language_,
+            start_date: payload?.event?.dates?.checkIn || item?.checkIn,
+            end_date: payload?.event?.dates?.checkOut || item?.checkOut,
+            is_test: String(isTestSubmission),
+          }),
+        });
+
+        if (response.ok) {
+          const { id: proposalesRfpId } = await response.json();
+          console.log("Submitted to Proposales inbox, RFP id:", proposalesRfpId);
+          submittedToProposales = true;
+        } else {
+          const errorText = await response.text();
+          console.warn(`Proposales inbox API returned ${response.status}:`, errorText);
+        }
+      } catch (extErr) {
+        console.warn("Proposales inbox submission failed:", extErr);
+      }
+    }
 
     const proposalItem: ProposalItem = {
       id: finalId,
@@ -471,6 +599,7 @@ app.post("/api/proposals", async (req, res) => {
       specialNotes: payload?.event?.specialDirectives || item?.specialNotes,
       latencySeconds: item?.latencySeconds,
       rawJson: payload || item?.rawJson,
+      externalSync: submittedToProposales,
     };
 
     // Save directly to PostgreSQL via Drizzle ORM
@@ -486,7 +615,7 @@ app.post("/api/proposals", async (req, res) => {
       totalSEK: proposalItem.totalAmountSEK,
       clientName: proposalItem.clientName,
       proposal: proposalItem,
-      externalSync: !!externalApiResponse,
+      externalSync: submittedToProposales,
     });
   } catch (err: any) {
     console.error("Proposales submission error:", err);

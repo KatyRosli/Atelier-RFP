@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, serial, text, timestamp, real } from 'drizzle-orm/pg-core';
+import { boolean, integer, pgTable, serial, text, timestamp, real } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -34,6 +34,7 @@ export const proposals = pgTable('proposals', {
   specialNotes: text('special_notes'),
   latencySeconds: real('latency_seconds'),
   rawJson: text('raw_json'),
+  externalSync: boolean('external_sync').default(false),
   createdAt: timestamp('created_at').defaultNow(),
 });
 

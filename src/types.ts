@@ -105,4 +105,5 @@ export interface ProposalItem {
   specialNotes?: string;
   latencySeconds?: number;
   rawJson?: RfpPayload;
+  externalSync?: boolean;
 }

@@ -94,6 +94,7 @@ export default function App() {
   const [proposalsLoaded, setProposalsLoaded] = useState<boolean>(false);
   const [currentPayload, setCurrentPayload] = useState<RfpPayload | null>(null);
   const [currentTranscript, setCurrentTranscript] = useState<string>("");
+  const [currentLanguage, setCurrentLanguage] = useState<"en" | "sv">("en");
   const [activeProposal, setActiveProposal] = useState<ProposalItem | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfileData>(() => {
     if (typeof window !== "undefined") {
@@ -113,6 +114,37 @@ export default function App() {
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
     }
+  }, []);
+
+  // Fill in the real hotel name (and email domain) from Proposales once, if the
+  // profile hasn't been customized yet. Proposales' API has no "current user"
+  // endpoint, so a real person's name/email can't be fetched this way - only
+  // company-level info (name, website) is available.
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("user_profile")) {
+      return;
+    }
+    async function loadRealCompanyInfo() {
+      try {
+        const res = await fetch(apiUrl("/api/proposales/company"));
+        if (!res.ok) return;
+        const company = await res.json();
+        setUserProfile((prev) => {
+          let domain: string | null = null;
+          try {
+            domain = company.websiteUrl ? new URL(company.websiteUrl).hostname.replace(/^www\./, "") : null;
+          } catch {}
+          return {
+            ...prev,
+            companyName: company.name || prev.companyName,
+            email: domain ? `${prev.firstName.toLowerCase()}.${prev.lastName.toLowerCase()}@${domain}` : prev.email,
+          };
+        });
+      } catch (err) {
+        console.warn("Could not fetch real company info from Proposales:", err);
+      }
+    }
+    loadRealCompanyInfo();
   }, []);
 
   // Fetch proposals from PostgreSQL backend (single default account, no login required)
@@ -143,9 +175,15 @@ export default function App() {
     goToTab("voice-capture");
   };
 
-  const handleVoiceExtracted = (payload: RfpPayload, transcript: string, durationSeconds: number) => {
+  const handleVoiceExtracted = (
+    payload: RfpPayload,
+    transcript: string,
+    durationSeconds: number,
+    language: "en" | "sv"
+  ) => {
     setCurrentPayload(payload);
     setCurrentTranscript(transcript);
+    setCurrentLanguage(language);
     goToTab("review-rfp");
   };
 
@@ -215,6 +253,7 @@ export default function App() {
                   <ReviewRfpView
                     payload={currentPayload}
                     transcript={currentTranscript}
+                    language={currentLanguage}
                     onReRecord={() => goToTab("voice-capture")}
                     onSubmitToProposales={handleSubmitToProposales}
                   />

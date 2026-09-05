@@ -23,6 +23,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
   const proposalUrl = proposal.proposalUrl;
   const clientName = proposal.clientName;
   const contactPhone = proposal.contactPhone;
+  const isLive = !!proposal.externalSync;
 
   // Trigger festive confetti on first render or copy
   const triggerConfetti = () => {
@@ -66,11 +67,12 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             </div>
             <div>
               <h1 className="text-[24px] sm:text-[28px] font-bold text-on-surface tracking-tight">
-                Proposal Created in Proposales!
+                {isLive ? "Proposal Created in Proposales!" : "Request Submitted to Proposales"}
               </h1>
               <p className="text-xs sm:text-sm text-on-surface-variant mt-1">
-                Live quotation published for <strong className="text-on-surface">{proposal.title}</strong> · Total
-                Contract:{" "}
+                {isLive ? "Live draft published for " : "Filed in the hotel's inbox for "}
+                <strong className="text-on-surface">{proposal.title}</strong> ·{" "}
+                {isLive ? "Total Contract" : "Estimated Budget"}:{" "}
                 <strong className="text-primary font-semibold">{proposal.totalAmountSEK.toLocaleString()} SEK</strong>
               </p>
             </div>
@@ -78,17 +80,26 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
         </div>
       </div>
 
-      {/* Client Public Link Card */}
+      {/* Proposal Reference Card */}
       <div className="w-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-outline-variant/20">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[20px]">link</span>
-            <h2 className="text-sm font-semibold text-on-surface">Client Public Proposal Link</h2>
+            <h2 className="text-sm font-semibold text-on-surface">
+              {isLive ? "Client Public Proposal Link" : "Proposal Reference"}
+            </h2>
           </div>
-          <span className="text-xs text-emerald-800 font-semibold flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-800" />
-            Active &amp; Ready to Sign
-          </span>
+          {isLive ? (
+            <span className="text-xs text-emerald-800 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-800" />
+              Live in Proposales
+            </span>
+          ) : (
+            <span className="text-xs text-amber-800 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-800" />
+              Submitted to Proposales — Awaiting Quote
+            </span>
+          )}
         </div>
 
         {/* URL Box with Quick Copy */}
@@ -118,20 +129,28 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
               <span className="material-symbols-outlined text-[16px]">
                 {copied ? "check" : "content_copy"}
               </span>
-              <span>{copied ? "Link Copied!" : "Copy Link"}</span>
+              <span>{copied ? (isLive ? "Link Copied!" : "Reference Copied!") : (isLive ? "Copy Link" : "Copy Reference")}</span>
             </button>
 
-            <a
-              href={proposalUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="h-10 px-4 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
-            >
-              <span>Open in Proposales</span>
-              <span className="material-symbols-outlined text-[16px]">open_in_new</span>
-            </a>
+            {isLive && (
+              <a
+                href={proposalUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="h-10 px-4 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
+              >
+                <span>Open in Proposales</span>
+                <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+              </a>
+            )}
           </div>
         </div>
+
+        {!isLive && (
+          <p className="text-[11px] text-on-surface-variant mt-2.5">
+            This request has been filed in Grand Hôtel's Proposales inbox. A team member will review it and send the client a live, signable proposal from Proposales directly — this reference link is for this app's own PDF preview only, not a public client-facing page.
+          </p>
+        )}
 
         {/* Quick Specs Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-outline-variant/15 text-xs">
