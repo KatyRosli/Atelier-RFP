@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext.tsx";
+import { apiUrl } from "../lib/api.ts";
 
 export interface UserProfileData {
   firstName: string;
   lastName: string;
+  role: string;
   companyName: string;
   email: string;
 }
@@ -17,12 +18,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   userProfile,
   onUpdateProfile,
 }) => {
-  const { user, idToken, signInWithGoogle, signOutUser } = useAuth();
-  // Profile state with default fallback for Elin at Grand Hôtel Stockholm
-  const [firstName, setFirstName] = useState<string>(userProfile?.firstName || "Elin");
+  // Profile state with default fallback for Alex at Noir Hôtel Stockholm
+  const [firstName, setFirstName] = useState<string>(userProfile?.firstName || "Alex");
   const [lastName, setLastName] = useState<string>(userProfile?.lastName || "Lindell");
-  const [companyName, setCompanyName] = useState<string>(userProfile?.companyName || "Grand Hôtel Stockholm");
-  const [email, setEmail] = useState<string>(userProfile?.email || "elin.lindell@grandhotel.se");
+  const [role, setRole] = useState<string>(userProfile?.role || "Sales Manager");
+  const [companyName, setCompanyName] = useState<string>(userProfile?.companyName || "Noir Hôtel Stockholm");
+  const [email, setEmail] = useState<string>(userProfile?.email || "alex.lindell@noirhotel.se");
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // Sync state if userProfile prop changes
@@ -30,10 +31,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     if (userProfile) {
       setFirstName(userProfile.firstName);
       setLastName(userProfile.lastName);
+      setRole(userProfile.role);
       setCompanyName(userProfile.companyName);
       setEmail(userProfile.email);
     }
-  }, [userProfile?.firstName, userProfile?.lastName, userProfile?.companyName, userProfile?.email]);
+  }, [userProfile?.firstName, userProfile?.lastName, userProfile?.role, userProfile?.companyName, userProfile?.email]);
 
   const emitUpdate = (updated: UserProfileData) => {
     if (onUpdateProfile) {
@@ -49,6 +51,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     emitUpdate({
       firstName: val,
       lastName,
+      role,
       companyName,
       email,
     });
@@ -59,6 +62,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     emitUpdate({
       firstName,
       lastName: val,
+      role,
+      companyName,
+      email,
+    });
+  };
+
+  const handleRoleChange = (val: string) => {
+    setRole(val);
+    emitUpdate({
+      firstName,
+      lastName,
+      role: val,
       companyName,
       email,
     });
@@ -69,6 +84,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     emitUpdate({
       firstName,
       lastName,
+      role,
       companyName: val,
       email,
     });
@@ -79,6 +95,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     emitUpdate({
       firstName,
       lastName,
+      role,
       companyName,
       email: val,
     });
@@ -122,6 +139,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     const updated: UserProfileData = {
       firstName,
       lastName,
+      role,
       companyName,
       email,
     };
@@ -163,7 +181,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 {firstName} {lastName}
               </h2>
               <p className="text-xs text-on-surface-variant truncate">
-                {email} · <span className="font-semibold text-primary">{companyName}</span>
+                {role} · <span className="font-semibold text-primary">{companyName}</span>
               </p>
             </div>
           </div>
@@ -181,7 +199,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   required
                   value={firstName}
                   onChange={(e) => handleFirstNameChange(e.target.value)}
-                  placeholder="e.g. Elin"
+                  placeholder="e.g. Alex"
                   className="h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
                 />
               </div>
@@ -203,6 +221,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
             </div>
 
+            {/* Role Input */}
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="input-role" className="text-xs font-semibold text-on-surface">
+                Role <span className="text-error">*</span>
+              </label>
+              <input
+                id="input-role"
+                type="text"
+                required
+                value={role}
+                onChange={(e) => handleRoleChange(e.target.value)}
+                placeholder="e.g. Sales Manager"
+                className="h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+              />
+            </div>
+
             {/* Company Name Input */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="input-company-name" className="text-xs font-semibold text-on-surface">
@@ -218,7 +252,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   required
                   value={companyName}
                   onChange={(e) => handleCompanyNameChange(e.target.value)}
-                  placeholder="e.g. Grand Hôtel Stockholm"
+                  placeholder="e.g. Noir Hôtel Stockholm"
                   className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
                 />
               </div>
@@ -239,7 +273,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   required
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  placeholder="e.g. elin.lindell@grandhotel.se"
+                  placeholder="e.g. alex.lindell@noirhotel.se"
                   className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
                 />
               </div>
@@ -277,14 +311,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <div>
               <h2 className="text-base font-bold text-on-surface flex items-center gap-2">
                 <span>Display Mode &amp; Contrast</span>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold">
-                  <span className="material-symbols-outlined text-[13px]">verified</span>
-                  WCAG AAA Certified
-                </span>
               </h2>
-              <p className="text-xs text-on-surface-variant mt-0.5">
-                Toggle between Light and Dark mode. Both themes strictly pass WCAG AA &amp; AAA contrast tests.
-              </p>
             </div>
           </div>
 
@@ -348,190 +375,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </div>
             </button>
           </div>
-
-          {/* WCAG Contrast Ratio Audit Table */}
-          <div className="bg-surface-container-low rounded-xl p-3.5 sm:p-4 border border-outline-variant/20 space-y-2.5">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-on-surface flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-secondary text-[16px]">contrast</span>
-                WCAG Contrast Ratio Audit:
-              </span>
-              <span className="text-[11px] font-mono font-bold text-secondary">
-                {themeMode === "light" ? "Light Mode: 15.6:1 (AAA)" : "Dark Mode: 16.5:1 (AAA)"}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
-              <div className="bg-surface-container-lowest p-2.5 rounded-lg border border-outline-variant/20">
-                <div className="text-on-surface-variant">Body Typography</div>
-                <div className="font-bold text-on-surface mt-0.5">
-                  {themeMode === "light" ? "15.6:1 Ratio" : "16.5:1 Ratio"}
-                </div>
-                <div className="text-[10px] text-secondary font-semibold">Exceeds 4.5:1 Target</div>
-              </div>
-
-              <div className="bg-surface-container-lowest p-2.5 rounded-lg border border-outline-variant/20">
-                <div className="text-on-surface-variant">Muted Metadata</div>
-                <div className="font-bold text-on-surface mt-0.5">
-                  {themeMode === "light" ? "9.6:1 Ratio" : "10.8:1 Ratio"}
-                </div>
-                <div className="text-[10px] text-secondary font-semibold">Exceeds 4.5:1 Target</div>
-              </div>
-
-              <div className="bg-surface-container-lowest p-2.5 rounded-lg border border-outline-variant/20">
-                <div className="text-on-surface-variant">Interactive Buttons</div>
-                <div className="font-bold text-on-surface mt-0.5">
-                  {themeMode === "light" ? "6.3:1 Ratio" : "8.2:1 Ratio"}
-                </div>
-                <div className="text-[10px] text-secondary font-semibold">Exceeds 3.0:1 Target</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Integration Status Card */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-xs border border-outline-variant/30">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-[20px]">hub</span>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-on-surface">Proposales &amp; AI Engine Status</h3>
-                <p className="text-xs text-on-surface-variant">
-                  Cloud quotation generation &amp; interactive signing link engine
-                </p>
-              </div>
-            </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-              Active
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-4">
-            <div className="bg-surface-container-low p-2.5 rounded-xl flex items-center justify-between">
-              <span className="text-on-surface-variant">Tenant ID:</span>
-              <span className="font-mono text-primary font-bold">grand-hotel-stockholm</span>
-            </div>
-            <div className="bg-surface-container-low p-2.5 rounded-xl flex items-center justify-between">
-              <span className="text-on-surface-variant">AI Extraction:</span>
-              <span className="font-semibold text-on-surface">GPT-4o-mini (Vercel AI SDK)</span>
-            </div>
-          </div>
-
-          {/* Live .env.local Key Diagnostic Test */}
-          <ApiDiagnosticsWidget />
-        </div>
-
-        {/* Cloud SQL PostgreSQL Database & Persistence Card */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-xs border border-outline-variant/30">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-[22px]">database</span>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-on-surface flex items-center gap-2">
-                  <span>Cloud SQL (PostgreSQL)</span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
-                    europe-west1
-                  </span>
-                </h3>
-                <p className="text-xs text-on-surface-variant">
-                  Persistent relational backend with Drizzle ORM schema validation
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Live Connected
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs mb-5">
-            <div className="bg-surface-container-low p-2.5 rounded-xl flex flex-col gap-0.5">
-              <span className="text-on-surface-variant text-[11px]">Database Instance:</span>
-              <span className="font-mono text-primary font-bold text-xs truncate">ai-studio-417eb89f</span>
-            </div>
-            <div className="bg-surface-container-low p-2.5 rounded-xl flex flex-col gap-0.5">
-              <span className="text-on-surface-variant text-[11px]">Region:</span>
-              <span className="font-semibold text-on-surface text-xs">europe-west1</span>
-            </div>
-            <div className="bg-surface-container-low p-2.5 rounded-xl flex flex-col gap-0.5">
-              <span className="text-on-surface-variant text-[11px]">Relational Schema:</span>
-              <span className="font-semibold text-on-surface text-xs">users, proposals</span>
-            </div>
-          </div>
-
-          {/* Account Authentication & Sync Status */}
-          <div className="bg-surface-container-low rounded-xl p-4 border border-outline-variant/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              {user?.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt={user.displayName || "User"}
-                  className="w-10 h-10 rounded-full object-cover border border-outline-variant/30"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                  {user ? (user.email?.charAt(0) || "U").toUpperCase() : "G"}
-                </div>
-              )}
-              <div>
-                <div className="text-xs font-bold text-on-surface">
-                  {user ? user.displayName || user.email : "Not Authenticated"}
-                </div>
-                <div className="text-[11px] text-on-surface-variant">
-                  {user
-                    ? `Connected via Google Account (${user.email}) — Proposals synced to PostgreSQL`
-                    : "Sign in with Google to sync all voice-recorded proposals to your Cloud SQL database."}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              {user ? (
-                <button
-                  type="button"
-                  onClick={() => signOutUser()}
-                  className="h-9 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold border border-outline-variant/30 transition-all cursor-pointer"
-                >
-                  Sign Out
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => signInWithGoogle().catch((e) => console.warn(e))}
-                  className="h-9 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-2 shadow-xs transition-all cursor-pointer"
-                >
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                    />
-                  </svg>
-                  <span>Sign In with Google</span>
-                </button>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -553,7 +396,7 @@ const ApiDiagnosticsWidget: React.FC = () => {
     setTesting(true);
     setError(null);
     try {
-      const res = await fetch("/api/health");
+      const res = await fetch(apiUrl("/api/health"));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setHealthData({

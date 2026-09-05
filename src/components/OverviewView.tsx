@@ -38,10 +38,10 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary text-[11px] font-semibold uppercase tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            E-Commerce &amp; Sales Desk
+            Sales Manager
           </span>
           <span className="text-on-surface-variant/40 text-xs">/</span>
-          <span className="text-on-surface-variant text-xs font-medium">Grand Hôtel Stockholm</span>
+          <span className="text-on-surface-variant text-xs font-medium">Noir Hôtel Stockholm</span>
         </div>
 
         <div className="mt-3">
@@ -126,29 +126,6 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
       </div>
 
-      {/* Grand Hôtel Stockholm Visual Context Accent Banner */}
-      <div className="relative w-full rounded-2xl overflow-hidden shadow-sm mb-8 bg-surface-container border border-outline-variant/20">
-        <img
-          alt="Grand Hôtel Stockholm banquet suite and proposal overview setting"
-          className="w-full h-44 object-cover object-center"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPcBvcehPIxJihPFOKt6GuHh6m63WmvqApMDMq3OUW0bEBGFHyClK8239Dm3-B7aziVhaM7R7_wTWlNE88lXUNVjmo4VxDxQqZ--CBDwz3YgLlI9EdDStxdM94p76On4XAPrlXnwjSQSzSPbqlecvanpgYvRhG3iv_VOgStH2DsUtx7Ch4_o79D8LOkm9mSX_nhAoxjx-TwV3UpTtY7B2vnjnzTvY8Th2m8X9PSQurjGZ4rsIWFKsKcZL_zRb5tHBDjOQ"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/35 to-transparent flex items-end p-5 sm:p-6">
-          <div className="flex items-center justify-between w-full text-inverse-on-surface">
-            <div>
-              <span className="text-[11px] text-secondary-fixed uppercase tracking-wider font-bold">Venue Context</span>
-              <p className="text-[18px] text-inverse-on-surface font-semibold">Vinterträdgården &amp; Spegelsalen</p>
-              <p className="text-[13px] text-inverse-on-surface/85">Default inventory mapped to current Grand Hôtel Stockholm seasonal pricing</p>
-            </div>
-            <div className="hidden sm:flex items-center gap-2 bg-surface-container-lowest/15 backdrop-blur-md px-3 py-1.5 rounded-xl text-inverse-on-surface border border-white/10">
-              <span className="material-symbols-outlined text-[18px]">verified</span>
-              <span className="text-xs font-semibold">Tier 1 Connected</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Recent Requests Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -171,7 +148,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
 
       {/* Request List Stack */}
       <div className="flex flex-col gap-3 mb-8">
-        {proposals.slice(0, 4).map((p) => {
+        {proposals.length === 0 ? (
+          <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-on-surface-variant text-sm border border-outline-variant/20">
+            Start your recordings today and save it to RFP.
+          </div>
+        ) : (
+          proposals.slice(0, 4).map((p) => {
           const isSent = p.status === "sent_to_proposales";
           return (
             <div
@@ -201,9 +183,14 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   </span>
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <h4 className="text-[15px] text-on-surface font-semibold truncate hover:text-primary transition-colors">
-                    {p.title}
-                  </h4>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <h4 className="text-[15px] text-on-surface font-semibold truncate hover:text-primary transition-colors">
+                      {p.title}
+                    </h4>
+                    <span className="text-[10px] font-mono text-on-surface-variant bg-surface-container px-1.5 py-0.5 rounded flex-shrink-0">
+                      {p.id}
+                    </span>
+                  </div>
                   <p className="text-xs text-on-surface-variant">
                     {p.guestsCount} guests · {p.datesText}
                   </p>
@@ -215,7 +202,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                   {isSent ? (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D1FAE5] text-[#065F46] text-[11px] font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#065F46]" />
-                      Sent to Proposales
+                      Proposal Created
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] text-[11px] font-semibold">
@@ -268,34 +255,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               </div>
             </div>
           );
-        })}
-      </div>
-
-      {/* Pipeline Status Banner */}
-      <div className="rounded-2xl bg-surface-container-high/60 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-outline-variant/20 shadow-xs">
-        <div className="flex items-start sm:items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-            <span className="material-symbols-outlined text-[20px]">graphic_eq</span>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2 flex-wrap">
-              <p className="text-xs sm:text-sm text-on-surface font-semibold">
-                Voice-to-Proposal Pipeline Active
-              </p>
-              <span className="px-2 py-0.5 rounded-full bg-surface-container-lowest text-[10px] font-mono text-primary font-bold">
-                GPT-4o-mini · Vercel AI SDK
-              </span>
-            </div>
-            <p className="text-[11px] sm:text-[12px] text-on-surface-variant mt-0.5">
-              Browser Web Speech API ➔ Vercel AI SDK (generateObject) ➔ Live Proposales API Sync.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-container-lowest text-xs font-semibold text-on-surface border border-outline-variant/20 flex-shrink-0 self-end sm:self-center">
-          <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-          <span>Proposales Ready</span>
-        </div>
+        })
+        )}
       </div>
     </div>
   );

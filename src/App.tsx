@@ -7,43 +7,33 @@ import { ReviewRfpView } from "./components/ReviewRfpView";
 import { ProposalCreatedView } from "./components/ProposalCreatedView";
 import { HistoryView } from "./components/HistoryView";
 import { ProfileView, UserProfileData } from "./components/ProfileView";
-import { INITIAL_PROPOSALS, INITIAL_NORDIC_PAYLOAD } from "./data/mockProposals";
 import { ProposalItem, RfpPayload } from "./types";
-import { useAuth } from "./context/AuthContext.tsx";
+import { apiUrl } from "./lib/api.ts";
+
+const DEFAULT_PROFILE: UserProfileData = {
+  firstName: "Alex",
+  lastName: "Lindell",
+  role: "Sales Manager",
+  companyName: "Noir Hôtel Stockholm",
+  email: "alex.lindell@noirhotel.se",
+};
 
 export default function App() {
-  const { user, idToken } = useAuth();
   const [activeTab, setActiveTab] = useState<NavTab>("overview");
-  const [proposals, setProposals] = useState<ProposalItem[]>(INITIAL_PROPOSALS);
-  const [currentPayload, setCurrentPayload] = useState<RfpPayload>(INITIAL_NORDIC_PAYLOAD);
-  const [currentTranscript, setCurrentTranscript] = useState<string>(
-    INITIAL_PROPOSALS[0]?.transcript || ""
-  );
-  const [activeProposal, setActiveProposal] = useState<ProposalItem>(INITIAL_PROPOSALS[0]);
+  const [proposals, setProposals] = useState<ProposalItem[]>([]);
+  const [currentPayload, setCurrentPayload] = useState<RfpPayload | null>(null);
+  const [currentTranscript, setCurrentTranscript] = useState<string>("");
+  const [activeProposal, setActiveProposal] = useState<ProposalItem | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfileData>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("user_profile");
       if (saved) {
         try {
-          const parsed = JSON.parse(saved);
-          // If the profile was previously saved with the legacy template name "Alex", upgrade it to "Elin"
-          if (parsed && parsed.firstName === "Alex") {
-            parsed.firstName = "Elin";
-            if (parsed.email === "alex.lindell@grandhotel.se") {
-              parsed.email = "elin.lindell@grandhotel.se";
-            }
-            localStorage.setItem("user_profile", JSON.stringify(parsed));
-          }
-          return parsed;
+          return { ...DEFAULT_PROFILE, ...JSON.parse(saved) };
         } catch {}
       }
     }
-    return {
-      firstName: "Elin",
-      lastName: "Lindell",
-      companyName: "Grand Hôtel Stockholm",
-      email: "elin.lindell@grandhotel.se",
-    };
+    return DEFAULT_PROFILE;
   });
 
   // Ensure theme preference is loaded
@@ -54,34 +44,17 @@ export default function App() {
     }
   }, []);
 
-  // Fetch proposals from PostgreSQL backend when authenticated
+  // Fetch proposals from PostgreSQL backend (single default account, no login required)
   useEffect(() => {
     async function loadProposalsFromDatabase() {
-      if (!idToken) return;
       try {
-        const res = await fetch("/api/proposals", {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+        const res = await fetch(apiUrl("/api/proposals"));
         if (res.ok) {
           const data = await res.json();
-          if (data.proposals && Array.isArray(data.proposals) && data.proposals.length > 0) {
-            setProposals(data.proposals);
-            setActiveProposal(data.proposals[0]);
-          } else {
-            // Seed initial proposals to the user's PostgreSQL database
-            for (const initial of INITIAL_PROPOSALS) {
-              await fetch("/api/proposals", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${idToken}`,
-                },
-                body: JSON.stringify({ item: initial }),
-              });
-            }
-            setProposals(INITIAL_PROPOSALS);
+          const dbProposals: ProposalItem[] = Array.isArray(data.proposals) ? data.proposals : [];
+          setProposals(dbProposals);
+          if (dbProposals.length > 0) {
+            setActiveProposal(dbProposals[0]);
           }
         }
       } catch (err) {
@@ -90,7 +63,7 @@ export default function App() {
     }
 
     loadProposalsFromDatabase();
-  }, [idToken]);
+  }, []);
 
   // Transitions
   const handleStartVoice = () => {
@@ -155,7 +128,7 @@ export default function App() {
             />
           )}
 
-          {activeTab === "review-rfp" && (
+          {activeTab === "review-rfp" && currentPayload && (
             <ReviewRfpView
               payload={currentPayload}
               transcript={currentTranscript}
@@ -164,7 +137,7 @@ export default function App() {
             />
           )}
 
-          {activeTab === "proposal-created" && (
+          {activeTab === "proposal-created" && activeProposal && (
             <ProposalCreatedView
               proposal={activeProposal}
               onCreateAnother={() => setActiveTab("voice-capture")}

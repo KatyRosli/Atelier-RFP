@@ -108,7 +108,11 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
 
       {/* Proposals Listing */}
       <div className="flex flex-col gap-3">
-        {filtered.length === 0 ? (
+        {proposals.length === 0 ? (
+          <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-on-surface-variant text-sm border border-outline-variant/20">
+            Start your recordings today and save it to RFP.
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-on-surface-variant text-xs border border-outline-variant/20">
             No proposal requests match your criteria.
           </div>
@@ -162,7 +166,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                     {isSent ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D1FAE5] text-[#065F46] text-[11px] font-semibold">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#065F46]" />
-                        Sent to Proposales
+                        Proposal Created
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#92400E] text-[11px] font-semibold">

@@ -56,7 +56,7 @@ export const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose, proposa
           <div className="bg-surface-container-low p-3 rounded-xl">
             <span className="text-xs text-on-surface-variant block font-medium">Subject</span>
             <span className="text-sm text-on-surface font-semibold">
-              Grand Hôtel Stockholm · Bespoke Proposal for {clientName}
+              Noir Hôtel Stockholm · Bespoke Proposal for {clientName}
             </span>
           </div>
 
@@ -71,7 +71,7 @@ export const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose, proposa
                 {proposalUrl}
               </a>
             </div>
-            <p className="text-[11px] opacity-75">Grand Hôtel Stockholm · Södra Blasieholmshamnen 8</p>
+            <p className="text-[11px] opacity-75">Noir Hôtel Stockholm · Södra Blasieholmshamnen 8</p>
           </div>
         </div>
 

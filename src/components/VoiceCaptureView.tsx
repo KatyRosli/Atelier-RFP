@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { RfpPayload } from "../types";
+import { apiUrl } from "../lib/api.ts";
 
 interface VoiceCaptureViewProps {
   onCancel: () => void;
@@ -246,7 +247,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
     setErrorMessage(null);
 
     try {
-      const res = await fetch("/api/extract", {
+      const res = await fetch(apiUrl("/api/extract"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transcript: fullText }),
@@ -349,7 +350,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
         parser: "client-local-ai",
         model: "gpt-4o-mini",
         confidenceScore: 0.95,
-        hotelTenantId: "grand-hotel-stockholm",
+        hotelTenantId: "noir-hotel-stockholm",
         parsedAt: new Date().toISOString(),
       },
     };
@@ -431,7 +432,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
           <div className="flex items-center gap-2">
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-xs font-medium">
               <span className="material-symbols-outlined text-[14px] text-primary">record_voice_over</span>
-              <span>Grand Hôtel Stockholm Intake</span>
+              <span>Noir Hôtel Stockholm Intake</span>
             </div>
           </div>
         </div>

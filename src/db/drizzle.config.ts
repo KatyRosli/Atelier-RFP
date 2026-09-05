@@ -1,7 +1,10 @@
 import { defineConfig } from "drizzle-kit";
 import * as dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+// Match server.ts: .env.local takes precedence, falling back to .env.
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const sqlHost = process.env.SQL_HOST;
 const sqlDbName = process.env.SQL_DB_NAME;

@@ -134,7 +134,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
           aria-label="RFP History"
         >
           <span className="material-symbols-outlined text-[22px]">schedule</span>
-          <span className="text-[10px] mt-0.5 tracking-tight font-medium">RFPs</span>
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">History</span>
         </button>
       </nav>
     </>

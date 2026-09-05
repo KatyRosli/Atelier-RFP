@@ -1,23 +1,38 @@
+import "./src/env.ts";
 import express from "express";
 import path from "path";
+import cors from "cors";
 import { createServer as createViteServer } from "vite";
-import dotenv from "dotenv";
 import { generateObject, generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { RfpPayloadSchema, RfpPayload, ProposalItem } from "./src/types";
-import { requireAuth, AuthRequest } from "./src/middleware/auth.ts";
 import { getOrCreateUser } from "./src/db/users.ts";
 import { getProposals, upsertProposal } from "./src/db/proposals.ts";
-
-// Load environment variables from .env.local first, then fallback to .env
-dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const app = express();
 const PORT = 3000;
 
+// No login screen: this is a single-account technical demo, so every voice-to-RFP
+// recording is saved under one fixed default account instead of a per-user identity.
+const DEFAULT_USER_ID = "alex-default-user";
+const DEFAULT_USER_EMAIL = "alex.lindell@noirhotel.se";
+
+// When the frontend is deployed separately from this backend (e.g. Vercel + Railway),
+// set ALLOWED_ORIGIN to the frontend's origin(s), comma-separated. Left unset, CORS is
+// wide open, which is fine for same-origin deployments or local development.
+const allowedOrigins = (process.env.ALLOWED_ORIGIN || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // In-memory proposal storage for dynamic session tracking
@@ -132,7 +147,7 @@ function extractWithHeuristics(transcript: string): RfpPayload {
       parser: "vercel-ai-sdk@4.1",
       model: "gpt-4o-mini",
       confidenceScore: 0.98,
-      hotelTenantId: "grand-hotel-stockholm",
+      hotelTenantId: "noir-hotel-stockholm",
       parsedAt: new Date().toISOString(),
     },
   };
@@ -142,7 +157,7 @@ function extractWithHeuristics(transcript: string): RfpPayload {
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    tenant: "Grand Hôtel Stockholm",
+    tenant: "Noir Hôtel Stockholm",
     hasGeminiKey: !!process.env.GEMINI_API_KEY,
     hasOpenAIKey: !!process.env.OPENAI_API_KEY,
     hasProposalesKey: !!process.env.PROPOSALES_API_KEY,
@@ -344,14 +359,12 @@ Return valid JSON only without markdown code blocks.`;
   }
 });
 
-// Database-backed proposal retrieval: GET /api/proposals (secured with Firebase Auth)
-app.get("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
+// Database-backed proposal retrieval: GET /api/proposals (single default account, no login)
+app.get("/api/proposals", async (_req, res) => {
   try {
-    const uid = req.user!.uid;
-    const userEmail = req.user!.email || "user@grandhotel.se";
-    await getOrCreateUser(uid, userEmail);
+    await getOrCreateUser(DEFAULT_USER_ID, DEFAULT_USER_EMAIL);
 
-    const dbProposals = await getProposals(uid);
+    const dbProposals = await getProposals(DEFAULT_USER_ID);
     res.json({ success: true, proposals: dbProposals });
   } catch (error: any) {
     console.error("Failed to fetch proposals:", error);
@@ -359,12 +372,11 @@ app.get("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
-// Database-backed proposal persistence: POST /api/proposals (secured with Firebase Auth)
-app.post("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
+// Database-backed proposal persistence: POST /api/proposals (single default account, no login)
+app.post("/api/proposals", async (req, res) => {
   try {
-    const uid = req.user!.uid;
-    const userEmail = req.user!.email || "user@grandhotel.se";
-    await getOrCreateUser(uid, userEmail);
+    const uid = DEFAULT_USER_ID;
+    await getOrCreateUser(uid, DEFAULT_USER_EMAIL);
 
     const { payload, item, apiKeyOverride } = req.body;
     const apiKey = apiKeyOverride || process.env.PROPOSALES_API_KEY;
@@ -389,7 +401,7 @@ app.post("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
           },
           body: JSON.stringify({
             title: `${clientName} Offsite`,
-            tenant_id: "grand-hotel-stockholm",
+            tenant_id: "noir-hotel-stockholm",
             currency: payload?.financials?.currency || "SEK",
             total_price: payload?.financials?.totalBudgetSEK || item?.totalAmountSEK || 450000,
             recipient: {
@@ -443,7 +455,15 @@ app.post("/api/proposals", requireAuth, async (req: AuthRequest, res) => {
       totalAmountSEK: payload?.financials?.totalBudgetSEK ?? item?.totalAmountSEK ?? 450000,
       marginPct: payload?.financials?.estimatedMarginPct ? Math.round(payload.financials.estimatedMarginPct * 100) : (item?.marginPct ?? 34),
       status: item?.status || "sent_to_proposales",
-      createdAtFormatted: "Just now",
+      createdAtFormatted:
+        item?.createdAtFormatted ||
+        new Date().toLocaleString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       proposalUrl: finalUrl,
       transcript: item?.transcript || "",
       meetingRooms: meetingSummary,

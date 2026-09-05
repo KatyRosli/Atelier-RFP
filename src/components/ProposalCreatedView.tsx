@@ -296,11 +296,11 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
 
           {/* Proposal Document Body */}
           <div className="p-5 sm:p-6 bg-[#fafafa]">
-            {/* Grand Hôtel Header */}
+            {/* Noir Hôtel Header */}
             <div className="flex items-center justify-between pb-4 border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded bg-[#005c55] flex items-center justify-center text-white font-bold text-xs">
-                  GH
+                  NH
                 </div>
                 <div>
                   <div className="text-xs font-bold uppercase tracking-widest text-[#005c55]">Grand Hôtel</div>
@@ -433,6 +433,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
         isOpen={isPdfModalOpen}
         onClose={() => setIsPdfModalOpen(false)}
         proposal={proposal}
+        payload={proposal.rawJson}
       />
     </div>
   );

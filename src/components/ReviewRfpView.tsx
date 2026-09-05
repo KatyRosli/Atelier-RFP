@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { RfpPayload, ProposalItem } from "../types";
 import { ProposalPdfModal } from "./ProposalPdfModal";
-import { useAuth } from "../context/AuthContext.tsx";
+import { apiUrl } from "../lib/api.ts";
+
+function formatCreatedAt(): string {
+  return new Date().toLocaleString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 interface ReviewRfpViewProps {
   payload: RfpPayload;
@@ -16,7 +26,6 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   onReRecord,
   onSubmitToProposales,
 }) => {
-  const { user, idToken, signInWithGoogle } = useAuth();
   const [viewMode, setViewMode] = useState<"structured" | "json">("structured");
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -38,16 +47,6 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   const handleSendToProposales = async () => {
     setIsSubmitting(true);
     try {
-      let activeToken = idToken;
-      if (!activeToken && !user) {
-        // Offer quick Google Sign In to save directly to PostgreSQL database
-        try {
-          await signInWithGoogle();
-        } catch (authErr) {
-          console.warn("User dismissed Google sign-in; proceeding with local proposal creation:", authErr);
-        }
-      }
-
       const clientName = payload.organization.name;
       const slug = clientName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       const generatedUrl = `https://proposales.com/p/grand-hotel/${slug}-2027`;
@@ -79,7 +78,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         totalAmountSEK: payload.financials.totalBudgetSEK,
         marginPct: Math.round(payload.financials.estimatedMarginPct * 100),
         status: "sent_to_proposales",
-        createdAtFormatted: "Just now",
+        createdAtFormatted: formatCreatedAt(),
         proposalUrl: generatedUrl,
         transcript,
         meetingRooms: meetingSummary,
@@ -89,14 +88,9 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         rawJson: payload,
       };
 
-      const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (idToken) {
-        headers["Authorization"] = `Bearer ${idToken}`;
-      }
-
-      const res = await fetch("/api/proposals", {
+      const res = await fetch(apiUrl("/api/proposals"), {
         method: "POST",
-        headers,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payload, item: preliminaryItem }),
       });
 
@@ -109,7 +103,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         };
         onSubmitToProposales(payload, savedProposal);
       } else {
-        // Fallback for unauthenticated state
+        // Backend save failed; still let the user proceed with a local-only proposal
         onSubmitToProposales(payload, preliminaryItem);
       }
     } catch (e) {
@@ -143,7 +137,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
         totalAmountSEK: payload.financials.totalBudgetSEK,
         marginPct: Math.round(payload.financials.estimatedMarginPct * 100),
         status: "sent_to_proposales",
-        createdAtFormatted: "Just now",
+        createdAtFormatted: formatCreatedAt(),
         proposalUrl: `https://proposales.com/p/grand-hotel/${slug}-2027`,
         transcript,
         meetingRooms: meetingSummary,

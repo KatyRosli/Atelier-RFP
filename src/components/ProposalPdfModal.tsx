@@ -53,14 +53,30 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
     year: "numeric",
   });
 
+  // Prefer the structured arrays from the voice-extracted payload; fall back to the
+  // pre-joined summary strings on the saved proposal, then a generic placeholder.
+  const meetingFacilities = payload?.event?.meetingFacilities;
+  const catering = payload?.event?.catering;
+
+  const primaryMeetingSpace = meetingFacilities?.[0]?.space || "Plenary Hall / Spegelsalen";
+  const cateringSummaryText =
+    proposal?.cateringSummary ||
+    (catering?.length
+      ? catering.map((c) => `${c.item}${c.quantity ? ` (x${c.quantity})` : ""}`).join(", ")
+      : "Welcome cocktail reception & 3-course dinner");
+
   // Calculate itemized estimates for Grand Hôtel Stockholm quotation
   const roomNightRate = 3200; // SEK per deluxe room / night
   const accommodationTotal = roomQuantity * nights * roomNightRate;
   const dailyConferencePackage = 1250; // SEK per delegate / day (space + A/V + lunch + fika)
-  const conferenceTotal = attendees * 2 * dailyConferencePackage;
-  const dinnerRate = 1850; // 3-course welcome dinner per guest
-  const dinnerTotal = attendees * dinnerRate;
-  const miscAndService = Math.max(0, totalBudgetSEK - (accommodationTotal + conferenceTotal + dinnerTotal));
+  const conferenceDays = meetingFacilities?.length
+    ? meetingFacilities.reduce((sum, m) => sum + (m.durationDays || 1), 0)
+    : 2;
+  const conferenceTotal = attendees * conferenceDays * dailyConferencePackage;
+  const cateringRate = 1850; // per guest, per catering occasion
+  const cateringOccasions = catering?.length || 1;
+  const cateringTotal = attendees * cateringOccasions * cateringRate;
+  const miscAndService = Math.max(0, totalBudgetSEK - (accommodationTotal + conferenceTotal + cateringTotal));
 
   const handlePrint = () => {
     window.print();
@@ -132,7 +148,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-serif tracking-widest text-[#005c55] font-black uppercase">
-                    GRAND HÔTEL
+                    NOIR HÔTEL
                   </span>
                 </div>
                 <div className="text-[11px] tracking-wider uppercase text-slate-500 font-medium mt-0.5">
@@ -192,7 +208,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
                 1. Event Program &amp; Venues
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Grand Hôtel Stockholm is pleased to present this custom itinerary for {clientName}. Our dedicated events team
+                Noir Hôtel Stockholm is pleased to present this custom itinerary for {clientName}. Our dedicated events team
                 will manage every detail from arrival transfers to plenary keynote facilities and gala dining in our historic venues.
               </p>
 
@@ -210,7 +226,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
                   <div className="text-[10px] font-bold uppercase text-slate-400">Plenary Meeting Space</div>
                   <div className="text-xs font-bold text-slate-800 mt-1">
-                    {payload?.event?.meetingFacilities?.[0]?.space || "Plenary Hall / Spegelsalen"}
+                    {primaryMeetingSpace}
                   </div>
                   <div className="text-[11px] text-slate-500 mt-0.5">
                     Cabaret configuration · 4K A/V &amp; technician included
@@ -221,7 +237,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
                   <div className="text-[10px] font-bold uppercase text-slate-400">Culinary Experience</div>
                   <div className="text-xs font-bold text-slate-800 mt-1">Full Delegate Package</div>
                   <div className="text-[11px] text-slate-500 mt-0.5">
-                    Welcome cocktail reception &amp; 3-course dinner
+                    {cateringSummaryText}
                   </div>
                 </div>
               </div>
@@ -233,18 +249,24 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
                 2. Meeting Spaces &amp; A/V Configuration
               </h3>
               <div className="text-xs text-slate-700 space-y-1.5">
-                <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span>Plenary Hall (Full Day 1 &amp; Day 2)</span>
-                  <span className="font-semibold text-slate-900">Cabaret Setup for {attendees} pax</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span>Audio-Visual Suite</span>
-                  <span className="font-semibold text-slate-900">Integrated Sound, Dual Projectors &amp; Lapel Mics</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
-                  <span>Connectivity</span>
-                  <span className="font-semibold text-slate-900">Dedicated 1 Gbps Symmetric Event VLAN</span>
-                </div>
+                {meetingFacilities?.length ? (
+                  meetingFacilities.map((m, i) => (
+                    <div key={i} className="flex justify-between py-1 border-b border-slate-100">
+                      <span>
+                        {m.space} ({m.durationDays} {m.durationDays === 1 ? "day" : "days"})
+                      </span>
+                      <span className="font-semibold text-slate-900">
+                        {m.setupPreference} setup for {attendees} pax
+                        {m.avRequirements?.length ? ` · ${m.avRequirements.join(", ")}` : ""}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex justify-between py-1 border-b border-slate-100">
+                    <span>Plenary Hall (Full Day 1 &amp; Day 2)</span>
+                    <span className="font-semibold text-slate-900">Cabaret Setup for {attendees} pax</span>
+                  </div>
+                )}
                 {payload?.event?.specialDirectives && (
                   <div className="p-2.5 bg-amber-50 rounded border border-amber-200 text-amber-900 text-[11px] mt-2">
                     <strong>Special Directives:</strong> {payload.event.specialDirectives}
@@ -284,12 +306,12 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
 
                   <tr>
                     <td className="py-2 text-slate-800">
-                      <strong>Full-Day Conference Package &amp; A/V</strong>
+                      <strong>Conference Package &amp; A/V ({primaryMeetingSpace})</strong>
                       <span className="block text-[11px] text-slate-500">
-                        Plenary hall, tech lead, 2 working lunches &amp; morning/afternoon fika
+                        {conferenceDays} {conferenceDays === 1 ? "day" : "days"} · space, technician &amp; A/V included
                       </span>
                     </td>
-                    <td className="py-2 text-center text-slate-600">{attendees * 2} Delegate Days</td>
+                    <td className="py-2 text-center text-slate-600">{attendees * conferenceDays} Delegate Days</td>
                     <td className="py-2 text-right text-slate-600">{dailyConferencePackage.toLocaleString()} SEK</td>
                     <td className="py-2 text-right font-semibold text-slate-900">
                       {conferenceTotal.toLocaleString()} SEK
@@ -298,15 +320,13 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
 
                   <tr>
                     <td className="py-2 text-slate-800">
-                      <strong>Welcome Cocktail &amp; 3-Course Dinner</strong>
-                      <span className="block text-[11px] text-slate-500">
-                        Day 1 Gala evening in the historic French Dining Room
-                      </span>
+                      <strong>Catering</strong>
+                      <span className="block text-[11px] text-slate-500">{cateringSummaryText}</span>
                     </td>
                     <td className="py-2 text-center text-slate-600">{attendees} Guests</td>
-                    <td className="py-2 text-right text-slate-600">{dinnerRate.toLocaleString()} SEK</td>
+                    <td className="py-2 text-right text-slate-600">{cateringRate.toLocaleString()} SEK</td>
                     <td className="py-2 text-right font-semibold text-slate-900">
-                      {dinnerTotal.toLocaleString()} SEK
+                      {cateringTotal.toLocaleString()} SEK
                     </td>
                   </tr>
 
@@ -345,7 +365,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
             {/* Section 4: Terms & Signatures */}
             <div className="pt-4 border-t border-slate-300 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-4">
-                {/* Grand Hôtel Representative */}
+                {/* Noir Hôtel Representative */}
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1">
                     AUTHORIZED HOTEL REPRESENTATIVE
@@ -374,7 +394,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
 
               {/* Legal Footer */}
               <div className="mt-8 pt-4 border-t border-slate-200 text-[10px] text-slate-400 text-center">
-                Grand Hôtel AB · Org.nr: 556006-2582 · VAT: SE556006258201 · Generated automatically via Proposales API Integration
+                Noir Hôtel AB · Org.nr: 556006-2582 · VAT: SE556006258201 · Generated automatically via Proposales API Integration
               </div>
             </div>
           </div>
