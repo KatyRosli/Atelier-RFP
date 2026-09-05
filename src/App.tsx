@@ -86,7 +86,6 @@ export default function App() {
           onOpenProfile={() => setActiveTab("profile")}
         />
 
-        {/* Scrollable View Area with safe-area bottom padding for mobile bar */}
         <main className="flex-1 pt-16 pb-24 md:pb-12 w-full">
           {activeTab === "overview" && (
             <OverviewView

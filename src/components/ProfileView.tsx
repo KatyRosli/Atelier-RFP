@@ -336,7 +336,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <span className="material-symbols-outlined text-[20px]">hub</span>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-on-surface">Proposales Live Gateway</h3>
+                <h3 className="text-sm font-semibold text-on-surface">Proposales &amp; AI Engine Status</h3>
                 <p className="text-xs text-on-surface-variant">
                   Cloud quotation generation &amp; interactive signing link engine
                 </p>
@@ -348,7 +348,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-4">
             <div className="bg-surface-container-low p-2.5 rounded-xl flex items-center justify-between">
               <span className="text-on-surface-variant">Tenant ID:</span>
               <span className="font-mono text-primary font-bold">grand-hotel-stockholm</span>
@@ -358,8 +358,138 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <span className="font-semibold text-on-surface">GPT-4o-mini (Vercel AI SDK)</span>
             </div>
           </div>
+
+          {/* Live .env.local Key Diagnostic Test */}
+          <ApiDiagnosticsWidget />
         </div>
       </div>
+    </div>
+  );
+};
+
+const ApiDiagnosticsWidget: React.FC = () => {
+  const [testing, setTesting] = useState<boolean>(false);
+  const [healthData, setHealthData] = useState<{
+    status: string;
+    hasOpenAIKey: boolean;
+    hasProposalesKey: boolean;
+    hasGeminiKey: boolean;
+    testedAt?: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const runTest = async () => {
+    setTesting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/health");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setHealthData({
+        ...data,
+        testedAt: new Date().toLocaleTimeString(),
+      });
+    } catch (err: any) {
+      setError(err.message || "Failed to reach server");
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  useEffect(() => {
+    runTest();
+  }, []);
+
+  return (
+    <div className="pt-3 border-t border-outline-variant/20">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-primary text-[18px]">key</span>
+          <span className="text-xs font-bold text-on-surface">.env.local Credentials Diagnostics</span>
+        </div>
+        <button
+          type="button"
+          onClick={runTest}
+          disabled={testing}
+          className="h-8 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-[11px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60"
+        >
+          <span className={`material-symbols-outlined text-[14px] ${testing ? "animate-spin" : ""}`}>
+            sync
+          </span>
+          <span>{testing ? "Testing..." : "Test Connection"}</span>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+        {/* OpenAI Key */}
+        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-on-surface-variant">OPENAI_API_KEY</span>
+            {healthData?.hasOpenAIKey ? (
+              <span className="w-2 h-2 rounded-full bg-secondary" title="Key detected" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-amber-500" title="Key not found in env" />
+            )}
+          </div>
+          <div className="mt-1 font-semibold text-[11px] text-on-surface flex items-center gap-1">
+            {healthData?.hasOpenAIKey ? (
+              <span className="text-secondary font-bold">✓ GPT-4o-mini Ready</span>
+            ) : (
+              <span className="text-amber-500">Heuristic Fallback Active</span>
+            )}
+          </div>
+        </div>
+
+        {/* Proposales Key */}
+        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-on-surface-variant">PROPOSALES_API_KEY</span>
+            {healthData?.hasProposalesKey ? (
+              <span className="w-2 h-2 rounded-full bg-secondary" title="Live key active" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-secondary/60" title="Sandbox mode" />
+            )}
+          </div>
+          <div className="mt-1 font-semibold text-[11px] text-on-surface">
+            {healthData?.hasProposalesKey ? (
+              <span className="text-secondary font-bold">✓ Live API Enabled</span>
+            ) : (
+              <span className="text-on-surface-variant">Demo Gateway Mode</span>
+            )}
+          </div>
+        </div>
+
+        {/* Gemini Key */}
+        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-on-surface-variant">GEMINI_API_KEY</span>
+            {healthData?.hasGeminiKey ? (
+              <span className="w-2 h-2 rounded-full bg-secondary" />
+            ) : (
+              <span className="w-2 h-2 rounded-full bg-outline" />
+            )}
+          </div>
+          <div className="mt-1 font-semibold text-[11px] text-on-surface">
+            {healthData?.hasGeminiKey ? (
+              <span className="text-secondary font-bold">✓ 2.5 Flash Secondary</span>
+            ) : (
+              <span className="text-on-surface-variant">Optional Secondary</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {healthData?.testedAt && (
+        <div className="text-[10px] text-on-surface-variant mt-2 text-right">
+          Last verified at {healthData.testedAt} · Server status: {healthData.status}
+        </div>
+      )}
+
+      {error && (
+        <div className="text-[11px] text-error mt-2">
+          Diagnostic error: {error}
+        </div>
+      )}
     </div>
   );
 };

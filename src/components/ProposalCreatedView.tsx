@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { ProposalItem } from "../types";
 import { EmailModal } from "./EmailModal";
+import { ProposalPdfModal } from "./ProposalPdfModal";
 
 interface ProposalCreatedViewProps {
   proposal: ProposalItem;
@@ -16,6 +17,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
 }) => {
   const [copied, setCopied] = useState<boolean>(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState<boolean>(false);
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
 
   const proposalUrl = proposal.proposalUrl;
@@ -109,7 +111,18 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             <span className="truncate">{proposalUrl}</span>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
+            <button
+              id="btn-view-pdf-created"
+              onClick={() => setIsPdfModalOpen(true)}
+              className="h-10 px-3.5 sm:px-4 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              type="button"
+              title="Preview and print official proposal PDF"
+            >
+              <span className="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+              <span>View PDF</span>
+            </button>
+
             <button
               onClick={handleCopyLink}
               className="h-10 px-4 rounded-lg bg-surface-container-lowest hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
@@ -157,9 +170,26 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
       {/* 1-Click Instant Distribution Bar */}
       <div className="w-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-outline-variant/20">
         <h3 className="text-xs uppercase tracking-wider text-on-surface-variant font-bold mb-3">
-          1-Click Instant Distribution
+          1-Click Instant Distribution &amp; Review
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* View / Print PDF (First-class action) */}
+          <button
+            onClick={() => setIsPdfModalOpen(true)}
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-secondary-container/30 hover:bg-secondary-container/60 transition-colors group cursor-pointer border border-secondary/20 text-left"
+            type="button"
+          >
+            <div className="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+              <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">
+                View &amp; Print PDF
+              </span>
+              <span className="text-[11px] text-on-surface-variant truncate">Official A4 quotation</span>
+            </div>
+          </button>
+
           {/* WhatsApp */}
           <a
             href={waUrl}
@@ -175,7 +205,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
                 WhatsApp
               </span>
               <span className="text-[11px] text-on-surface-variant truncate">
-                Pre-populated message to {proposal.contactName.split(" ")[0]}
+                Message to {proposal.contactName.split(" ")[0]}
               </span>
             </div>
           </a>
@@ -193,7 +223,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
                 SMS Mobile
               </span>
               <span className="text-[11px] text-on-surface-variant truncate">
-                Dispatch text to {proposal.contactPhone}
+                Dispatch text to contact
               </span>
             </div>
           </a>
@@ -211,7 +241,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
               <span className="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors">
                 Send Email Copy
               </span>
-              <span className="text-[11px] text-on-surface-variant truncate">Stockholm luxury branded layout</span>
+              <span className="text-[11px] text-on-surface-variant truncate">Stockholm branded layout</span>
             </div>
           </button>
         </div>
@@ -395,6 +425,13 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
       <EmailModal
         isOpen={isEmailModalOpen}
         onClose={() => setIsEmailModalOpen(false)}
+        proposal={proposal}
+      />
+
+      {/* PDF Document Preview & Print Modal */}
+      <ProposalPdfModal
+        isOpen={isPdfModalOpen}
+        onClose={() => setIsPdfModalOpen(false)}
         proposal={proposal}
       />
     </div>

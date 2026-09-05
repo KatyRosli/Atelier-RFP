@@ -7,7 +7,9 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { GoogleGenAI } from "@google/genai";
 import { RfpPayloadSchema, RfpPayload } from "./src/types";
 
-dotenv.config();
+// Load environment variables from .env.local first, then fallback to .env
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
 const app = express();
 const PORT = 3000;

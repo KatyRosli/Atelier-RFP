@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { RfpPayload, ProposalItem } from "../types";
+import { ProposalPdfModal } from "./ProposalPdfModal";
 
 interface ReviewRfpViewProps {
   payload: RfpPayload;
@@ -18,6 +19,7 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isEditingManual, setIsEditingManual] = useState<boolean>(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState<boolean>(false);
   const [payload, setPayload] = useState<RfpPayload>(initialPayload);
   const [copiedJson, setCopiedJson] = useState<boolean>(false);
 
@@ -580,9 +582,9 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
 
       {/* Persistent Sticky Bottom Action Bar */}
       <div className="sticky bottom-4 z-30 w-full bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl p-3 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-outline-variant/25">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
           <button
-            className="flex-1 sm:flex-none h-11 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 sm:flex-none h-11 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             onClick={onReRecord}
             type="button"
           >
@@ -590,12 +592,22 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
             <span>Re-record audio</span>
           </button>
           <button
-            className="flex-1 sm:flex-none h-11 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 sm:flex-none h-11 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             onClick={() => setIsEditingManual(!isEditingManual)}
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">edit</span>
             <span>{isEditingManual ? "Save manual edits" : "Edit fields manually"}</span>
+          </button>
+          <button
+            id="btn-preview-pdf-review"
+            className="flex-1 sm:flex-none h-11 px-4 rounded-xl bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            onClick={() => setIsPdfModalOpen(true)}
+            type="button"
+            title="Preview PDF proposal before client delivery"
+          >
+            <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+            <span>Preview PDF</span>
           </button>
         </div>
 
@@ -620,6 +632,13 @@ export const ReviewRfpView: React.FC<ReviewRfpViewProps> = ({
           </button>
         </div>
       </div>
+
+      {/* PDF Document Preview Modal */}
+      <ProposalPdfModal
+        isOpen={isPdfModalOpen}
+        onClose={() => setIsPdfModalOpen(false)}
+        payload={payload}
+      />
     </div>
   );
 };
