@@ -5,38 +5,20 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   --color-background: var(--bg-app);
-  --color-surface: var(--bg-surface);
-  --color-surface-bright: var(--bg-surface-bright);
-  --color-surface-dim: var(--bg-surface-dim);
-  --color-surface-container-lowest: var(--bg-surface-container-lowest);
-  --color-surface-container-low: var(--bg-surface-container-low);
   --color-surface-container: var(--bg-surface-container);
-  --color-surface-container-high: var(--bg-surface-container-high);
-  --color-surface-container-highest: var(--bg-surface-container-highest);
-  --color-surface-variant: var(--bg-surface-variant);
 
   --color-primary: var(--color-brand-primary);
   --color-primary-container: var(--color-brand-primary-container);
-  --color-primary-fixed: var(--color-brand-primary-fixed);
-  --color-primary-fixed-dim: var(--color-brand-primary-fixed-dim);
   --color-on-primary: var(--color-brand-on-primary);
   --color-on-primary-container: var(--color-brand-on-primary-container);
-  --color-on-primary-fixed: var(--color-brand-on-primary-fixed);
-  --color-on-primary-fixed-variant: var(--color-brand-on-primary-fixed-variant);
 
   --color-secondary: var(--color-brand-secondary);
   --color-secondary-container: var(--color-brand-secondary-container);
-  --color-secondary-fixed: var(--color-brand-secondary-fixed);
-  --color-secondary-fixed-dim: var(--color-brand-secondary-fixed-dim);
   --color-on-secondary: var(--color-brand-on-secondary);
   --color-on-secondary-container: var(--color-brand-on-secondary-container);
-  --color-on-secondary-fixed: var(--color-brand-on-secondary-fixed);
-  --color-on-secondary-fixed-variant: var(--color-brand-on-secondary-fixed-variant);
 
   --color-tertiary: var(--color-brand-tertiary);
   --color-tertiary-container: var(--color-brand-tertiary-container);
-  --color-tertiary-fixed: var(--color-brand-tertiary-fixed);
-  --color-tertiary-fixed-dim: var(--color-brand-tertiary-fixed-dim);
   --color-on-tertiary: var(--color-brand-on-tertiary);
   --color-on-tertiary-container: var(--color-brand-on-tertiary-container);
 
@@ -45,135 +27,91 @@
   --color-on-error: var(--color-brand-on-error);
   --color-on-error-container: var(--color-brand-on-error-container);
 
-  --color-outline: var(--color-brand-outline);
-  --color-outline-variant: var(--color-brand-outline-variant);
-  --color-on-surface: var(--color-brand-on-surface);
-  --color-on-surface-variant: var(--color-brand-on-surface-variant);
-  --color-on-background: var(--color-brand-on-background);
-
-  --color-inverse-surface: var(--color-brand-inverse-surface);
-  --color-inverse-on-surface: var(--color-brand-inverse-on-surface);
-  --color-inverse-primary: var(--color-brand-inverse-primary);
+  --color-success: var(--color-brand-success);
+  --color-success-container: var(--color-brand-success-container);
+  --color-on-success: var(--color-brand-on-success);
+  --color-on-success-container: var(--color-brand-on-success-container);
 }
 
 :root {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color-scheme: light;
 
-  /* LIGHT THEME: Strict WCAG AA & AAA Compliance */
-  --bg-app: #EBE0DA;
-  --bg-surface: #f8fafc;
-  --bg-surface-bright: #ffffff;
-  --bg-surface-dim: #161415;
-  --bg-surface-container-lowest: #ffffff;
-  --bg-surface-container-low: #f1f5f9;
-  --bg-surface-container: #E7E1E2;
-  --bg-surface-container-high: #AFAAAB;
-  --bg-surface-container-highest: #E7E1E2;
-  --bg-surface-variant: #f1f5f9;
+  --bg-app: radial-gradient(241.33% 50% at 50% 50%, #FEEAE6 0%, #EBE3F3 100%);
+  --bg-surface-container: #FFFAF9;
 
-  --color-brand-primary: #2E1A24;
-  --color-brand-primary-container: #FCD9E7;
-  --color-brand-primary-fixed: #DFBECB;
-  --color-brand-primary-fixed-dim: #C2A3B0;
-  --color-brand-on-primary: #FFFFFF;
-  --color-brand-on-primary-container: #2E1A24;   /* 12.6:1 (WCAG AAA) - was #9d7687 at 3.02:1 (fail) */
-  --color-brand-on-primary-fixed: #402A34;
-  --color-brand-on-primary-fixed-variant: #422432; /* 6.0:1 vs fixed-dim (WCAG AA) - was #715763 at 2.82:1 (fail) */
+  --color-brand-primary: #5A50DB;             
+  --color-brand-primary-container: #F4F9FF;
+  --color-brand-on-primary: #101220;
+  --color-brand-on-primary-container: #272838; 
 
-  --color-brand-secondary: #5a483f;   /* 8.6:1 vs white (WCAG AAA) - was #F2DFD5 at 1.29:1 (fail) */
-  --color-brand-secondary-container: #f0e5e0;   /* 7.6:1 vs on-secondary-container (WCAG AAA) - was #7C6D65 at 1.89:1 (fail) */
-  --color-brand-secondary-fixed: #B9A89F;
-  --color-brand-secondary-fixed-dim: #9E8D85;
-  --color-brand-on-secondary: #FFFFFF;
-  --color-brand-on-secondary-container: #51443D;
-  --color-brand-on-secondary-fixed: #3A2E27;
-  --color-brand-on-secondary-fixed-variant: #2E1A24; /* 5.1:1 vs fixed-dim (WCAG AA) - was #51443D at 2.94:1 (fail) */
+  --color-brand-secondary: #7D26DC;            
+  --color-brand-secondary-container: #FEEAE6;
+  --color-brand-on-secondary: #F4F9FF;
+  --color-brand-on-secondary-container: #272838; 
 
-  --color-brand-tertiary: #716965;   /* 5.4:1 vs white (WCAG AA) - was #7E7571 at 4.50:1 (fail, just under AA) */
-  --color-brand-tertiary-container: #ffedd5;
-  --color-brand-tertiary-fixed: #fed7aa;
-  --color-brand-tertiary-fixed-dim: #fdba74;
-  --color-brand-on-tertiary: #ffffff;
-  --color-brand-on-tertiary-container: #7c2d12;
+  --color-brand-tertiary: #FCA690;             
+  --color-brand-tertiary-container: #F4F9FF;
+  --color-brand-on-tertiary: #FEEAE6;
+  --color-brand-on-tertiary-container: #272838;
 
   --color-brand-error: #b91c1c;
   --color-brand-error-container: #fee2e2;
   --color-brand-on-error: #ffffff;
   --color-brand-on-error-container: #7f1d1d;
 
-  --color-brand-outline: #8d7468;   /* 3.4:1 vs bg-app (WCAG 1.4.11 non-text UI) - was #FCD9E7 at 1.00:1 (fail, invisible) */
-  --color-brand-outline-variant: #B9A89F;
-  --color-brand-on-surface: #2E1A24;
-  --color-brand-on-surface-variant: #2E1A24;
-  --color-brand-on-background: #2E1A24;
+  --color-brand-success: #166534;
+  --color-brand-success-container: #166534;
+  --color-brand-on-success: #dbf2fa;
+  --color-brand-on-success-container: #166534;
 
-  --color-brand-inverse-surface: #2E1A24;
-  --color-brand-inverse-on-surface: #f8fafc;
-  --color-brand-inverse-primary: #B9A89F;
+  /* Soft top-right ambient glow (see body rule below) */
+  --gradient-primary-rgb: 6, 0, 255;
+  --gradient-secondary-rgb: 187, 59, 27;
+  --gradient-tertiary-rgb: 69, 11, 244;
 }
 
 html.dark, :root.dark {
   color-scheme: dark;
 
-  /* DARK THEME: Strict WCAG AA & AAA Compliance */
-  --bg-app: #1F1A1D;
-  --bg-surface: #000000;
-  --bg-surface-bright: #151d2e;
-  --bg-surface-dim: #070a12;
-  --bg-surface-container-lowest: #000000;
-  --bg-surface-container-low: #392D34;
-  --bg-surface-container: #1e293b;
-  --bg-surface-container-high: #283548;
-  --bg-surface-container-highest: #334155;
-  --bg-surface-variant: #1e293b;
+  --bg-app: radial-gradient(241.33% 50% at 50% 50%, #171934 0%, #0F0F1C 100%);
+  --bg-surface-container: #272838;
 
-  --color-brand-primary: #B5829A;
-  --color-brand-primary-container: #264073;
-  --color-brand-primary-fixed: #e5eaf5;
-  --color-brand-primary-fixed-dim: #FFD8E8;
-  --color-brand-on-primary: #101d37;
-  --color-brand-on-primary-container: #e5eaf5;
-  --color-brand-on-primary-fixed: #182c54;
-  --color-brand-on-primary-fixed-variant: #1c2f54;
+  --color-brand-primary: #95A4FC;           
+  --color-brand-primary-container: #101220;
+  --color-brand-on-primary: #FFFFFF;
+  --color-brand-on-primary-container: #F0F0FD;
 
-  --color-brand-secondary: #A39288;
-  --color-brand-secondary-container: #33435b;
-  --color-brand-secondary-fixed: #e8ecf2;
-  --color-brand-secondary-fixed-dim: #bcc8dc;
-  --color-brand-on-secondary: #19212e;
-  --color-brand-on-secondary-container: #e8ecf2;
-  --color-brand-on-secondary-fixed: #1e293b;
-  --color-brand-on-secondary-fixed-variant: #232f43;
+  --color-brand-secondary: #C3B7FF;          
+  --color-brand-secondary-container: #171934;
+  --color-brand-on-secondary: #101220;
+  --color-brand-on-secondary-container: #F0F0FD;
 
-  --color-brand-tertiary: #fb923c;
-  --color-brand-tertiary-container: #7c2d12;
-  --color-brand-tertiary-fixed: #fed7aa;
-  --color-brand-tertiary-fixed-dim: #fb923c;
-  --color-brand-on-tertiary: #431407;
-  --color-brand-on-tertiary-container: #ffedd5;
+  --color-brand-tertiary: #DBB3B5;             
+  --color-brand-tertiary-container: #101220;
+  --color-brand-on-tertiary: #171934;
+  --color-brand-on-tertiary-container: #F0F0FD;
 
   --color-brand-error: #f87171;
   --color-brand-error-container: #7f1d1d;
   --color-brand-on-error: #450a0a;
   --color-brand-on-error-container: #fee2e2;
 
-  --color-brand-outline: #94a3b8;
-  --color-brand-outline-variant: #334155;
-  --color-brand-on-surface: #f8fafc;
-  --color-brand-on-surface-variant: #cbd5e1;
-  --color-brand-on-background: #f8fafc;
+  --color-brand-success: #4ade80;
+  --color-brand-success-container: #166534;
+  --color-brand-on-success: #dbf2fa;
+  --color-brand-on-success-container: #166534;
 
-  --color-brand-inverse-surface: #f8fafc;
-  --color-brand-inverse-on-surface: #0f172a;
-  --color-brand-inverse-primary: #182c54;
+  /* Soft top-right ambient glow (see body rule below) */
+  --gradient-primary-rgb: 123, 120, 255;
+  --gradient-secondary-rgb: 252, 166, 144;
+  --gradient-tertiary-rgb: 167, 139, 250;
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-app);
-  color: var(--color-brand-on-surface);
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -187,11 +125,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(141, 169, 226, 0.2);
+  background: rgba(123, 120, 255, 0.25);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(141, 169, 226, 0.4);
+  background: rgba(123, 120, 255, 0.45);
 }
 
 .material-symbols-outlined {
@@ -203,6 +141,7 @@ body {
 @media print {
   body {
     background: #ffffff !important;
+    background-image: none !important;
     color: #0f172a !important;
   }
 

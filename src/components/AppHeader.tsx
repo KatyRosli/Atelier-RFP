@@ -14,21 +14,21 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ userProfile, onOpenProfile
   const initials = `${firstName.charAt(0) || "A"}${lastName.charAt(0) || "L"}`.toUpperCase();
 
   return (
-    <header className="fixed top-0 left-0 md:left-[4.5rem] right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-3 sm:px-6 border-b border-outline-variant/30">
+    <header className="fixed top-0 left-0 md:left-[4.5rem] right-0 h-16 bg-primary-container z-40 flex items-center justify-between px-3 sm:px-6">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-[16px] sm:text-[17px] font-bold text-on-surface tracking-tight truncate">
+        <span className="text-[16px] sm:text-[17px] font-bold text-on-primary-container tracking-tight truncate">
           Atelier RFP
         </span>
-        <span className="hidden xs:inline text-on-surface-variant text-[12px] sm:text-[13px] opacity-70 truncate">
+        <span className="hidden xs:inline text-on-secondary-container text-[12px] sm:text-[13px] opacity-70 truncate">
           for Proposales
         </span>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4">
         {/* Hotel Venue Pill */}
-        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-surface-container-lowest shadow-[0_1px_4px_rgba(0,0,0,0.04)] border border-outline-variant/20">
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-surface-container shadow-[0_1px_4px_rgba(0,0,0,0.04)] border border-secondary/20">
           <span className="material-symbols-outlined text-primary text-[15px] sm:text-[16px]">hotel</span>
-          <span className="text-[12px] sm:text-[13px] text-on-surface font-medium truncate max-w-[130px] sm:max-w-none">
+          <span className="text-[12px] sm:text-[13px] text-on-primary-container font-medium truncate max-w-[130px] sm:max-w-none">
             {companyName}
           </span>
           <span className="w-1.5 h-1.5 rounded-full bg-secondary ml-0.5 animate-pulse flex-shrink-0" />
@@ -42,12 +42,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ userProfile, onOpenProfile
             type="button"
             title="Open Profile Settings"
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-semibold text-[11px] sm:text-xs shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center text-on-secondary font-semibold text-[11px] sm:text-xs shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform">
               {initials}
             </div>
             <div className="hidden lg:flex flex-col text-left">
-              <span className="text-[12px] text-on-surface font-semibold leading-none">{firstName}</span>
-              <span className="text-[11px] text-on-surface-variant opacity-80 leading-tight truncate max-w-[110px]">
+              <span className="text-[12px] text-on-primary-container font-semibold leading-none">{firstName}</span>
+              <span className="text-[11px] text-on-secondary-container opacity-80 leading-tight truncate max-w-[110px]">
                 {role}
               </span>
             </div>

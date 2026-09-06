@@ -96,21 +96,21 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-4xl bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant/30 z-10 flex flex-col max-h-[92vh] overflow-hidden my-auto">
+      <div className="relative w-full max-w-4xl bg-surface-container rounded-2xl shadow-2xl border border-secondary/30 z-10 flex flex-col max-h-[92vh] overflow-hidden my-auto">
         {/* Top Control Bar (Screen Only) */}
-        <div className="no-print flex items-center justify-between px-4 sm:px-6 py-3.5 bg-surface-container-low border-b border-outline-variant/30 flex-shrink-0">
+        <div className="no-print flex items-center justify-between px-4 sm:px-6 py-3.5 bg-surface-container border-b border-secondary/30 flex-shrink-0">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center">
               <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>
             </div>
             <div>
-              <div className="text-xs sm:text-sm font-bold text-on-surface flex items-center gap-2">
+              <div className="text-xs sm:text-sm font-bold text-on-primary-container flex items-center gap-2">
                 <span>PDF Proposal Document Preview</span>
-                <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-wider">
                   Client-Ready
                 </span>
               </div>
-              <div className="text-[11px] text-on-surface-variant hidden sm:block">
+              <div className="text-[11px] text-on-secondary-container hidden sm:block">
                 Verify line items, pricing, and hotel signatures before sharing with your client
               </div>
             </div>
@@ -131,7 +131,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
               id="btn-close-pdf-modal"
               type="button"
               onClick={onClose}
-              className="w-9 h-9 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-surface-container hover:bg-surface-container text-on-primary-container flex items-center justify-center transition-colors cursor-pointer"
               title="Close Preview"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
@@ -140,7 +140,7 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
         </div>
 
         {/* Scrollable Document Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-surface-container-low/50">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-surface-container/50">
           {/* THE PRINTABLE PROPOSAL PDF SHEET (Conforms to A4 standards) */}
           <div className="printable-proposal-pdf mx-auto max-w-[780px] bg-white text-slate-900 shadow-xl rounded-xl p-8 sm:p-12 border border-slate-200">
             {/* Header / Brand Letterhead */}

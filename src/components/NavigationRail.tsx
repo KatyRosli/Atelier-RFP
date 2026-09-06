@@ -17,12 +17,12 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
   return (
     <>
       {/* DESKTOP & TABLET: Left Vertical Rail */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-full w-[4.5rem] bg-surface-container-lowest z-50 flex-col items-center py-6 shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-r border-outline-variant/30">
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-[4.5rem] bg-surface-container z-50 flex-col items-center py-6 shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-r border-secondary/30">
         {/* Brand Icon */}
         <div className="mb-6">
           <button
             onClick={() => onSelectTab("overview")}
-            className="w-10 h-10 rounded-xl bg-inverse-surface flex items-center justify-center shadow-sm text-inverse-on-surface hover:scale-105 transition-all cursor-pointer"
+            className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-sm text-on-primary hover:scale-105 transition-all cursor-pointer"
             title="Atelier RFP for Proposales"
             type="button"
           >
@@ -38,7 +38,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
               activeTab === "voice-capture"
                 ? "bg-primary text-on-primary font-semibold shadow-sm"
-                : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                : "text-on-surface-variant hover:bg-surface-container hover:text-on-primary-container"
             }`}
             title="New Voice Capture"
             type="button"
@@ -52,7 +52,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
               activeTab === "overview"
                 ? "bg-primary text-on-primary font-semibold shadow-sm"
-                : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                : "text-on-secondary-container hover:bg-surface-container hover:text-on-primary-container"
             }`}
             title="Overview Dashboard"
             type="button"
@@ -66,7 +66,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
               activeTab === "rfp-history"
                 ? "bg-primary text-on-primary font-semibold shadow-sm"
-                : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                : "text-on-secondary-container hover:bg-surface-container hover:text-on-primary-container"
             }`}
             title="RFP History"
             type="button"
@@ -82,7 +82,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
             className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 cursor-pointer ${
               activeTab === "profile"
                 ? "bg-primary text-on-primary font-semibold shadow-sm"
-                : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                : "text-on-secondary-container hover:bg-surface-container hover:text-on-primary-container"
             }`}
             title="Profile & Appearance"
             type="button"
@@ -93,7 +93,7 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
       </aside>
 
       {/* MOBILE: Bottom Navigation Bar (thumb-friendly, Voice in the exact middle) */}
-      <nav className="flex md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 z-50 px-6 items-center justify-between shadow-[0_-2px_12px_rgba(0,0,0,0.06)]">
+      <nav className="flex md:hidden fixed bottom-0 left-0 right-0 h-16 bg-primary-container z-50 px-6 items-center justify-between">
         {/* Home */}
         <button
           onClick={() => onSelectTab("overview")}
@@ -111,10 +111,10 @@ export const NavigationRail: React.FC<NavigationRailProps> = ({ activeTab, onSel
         <div className="absolute left-1/2 -translate-x-1/2 -top-5 flex flex-col items-center pointer-events-auto">
           <button
             onClick={() => onSelectTab("voice-capture")}
-            className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer ring-4 ring-surface-container-lowest ${
+            className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer ring-4 ring-surface-container ${
               activeTab === "voice-capture"
-                ? "bg-primary text-on-primary ring-primary/30 scale-105"
-                : "bg-primary text-on-primary hover:bg-primary-container"
+                ? "bg-primary text-on-tertiary ring-primary/30 scale-105"
+                : "bg-primary text-on-tertiary hover:bg-primary-container"
             }`}
             type="button"
             aria-label="Record Voice Memo"

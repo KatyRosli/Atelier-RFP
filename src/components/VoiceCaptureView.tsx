@@ -394,28 +394,28 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
   return (
     <div className="flex flex-col w-full max-w-[760px] mx-auto py-8 px-4 sm:px-6 relative">
       {/* Background Ambient Glow */}
-      <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-container/20 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* Central Focused Card / Voice Recording Pane */}
-      <div className="w-full bg-surface-container-lowest rounded-2xl shadow-xl p-6 sm:p-8 relative overflow-hidden border border-outline-variant/20">
+      <div className="w-full bg-surface-container rounded-2xl shadow-xl p-6 sm:p-8 relative overflow-hidden border border-secondary/20">
         {/* Top Decorative Scandinavian Accent Strip */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary-fixed via-primary-container to-secondary" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary-container via-primary-container to-secondary" />
 
         {/* Top Header Row: Status & Property Meta */}
         <div className="flex items-center justify-between mb-6">
           {/* Live Audio State Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low shadow-sm border border-outline-variant/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container shadow-sm border border-secondary/20">
             <span className="relative flex h-2.5 w-2.5">
               {isRecording ? (
                 <>
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-error" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-tertiary" />
                 </>
               ) : (
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-outline" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary" />
               )}
             </span>
-            <span className="text-xs text-on-surface font-semibold tracking-tight">
+            <span className="text-xs text-on-primary-container font-semibold tracking-tight">
               {isRecording ? "Listening" : "Microphone Ready"} · {language === "en" ? "English" : "Svenska"}
             </span>
             <button
@@ -430,7 +430,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
 
           {/* Venue Reference */}
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-xs font-medium">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-secondary-container text-xs font-medium">
               <span className="material-symbols-outlined text-[14px] text-primary">record_voice_over</span>
               <span>Noir Hôtel Stockholm Intake</span>
             </div>
@@ -440,10 +440,10 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
         {/* Instruction Headline & Helper Copy */}
         <div className="text-center max-w-xl mx-auto mb-6">
           <span className="text-xs uppercase tracking-wider text-primary font-bold mb-1 block">Live RFP Voice Intake</span>
-          <h1 className="text-[26px] sm:text-[30px] text-on-background font-bold tracking-tight mb-2">
+          <h1 className="text-[26px] sm:text-[30px] text-on-primary-container font-bold tracking-tight mb-2">
             {isRecording ? "Listening to your voice..." : "Click to speak your request"}
           </h1>
-          <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+          <p className="text-xs sm:text-sm text-on-secondary-container leading-relaxed">
             State the client name, guest count, dates, room needs, meeting setup, catering, and SEK budget. Speak naturally in English or Swedish.
           </p>
         </div>
@@ -461,8 +461,8 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
           <div className="relative flex items-center justify-center">
             {isRecording && (
               <>
-                <div className="absolute w-32 h-32 rounded-full bg-error/15 animate-ping opacity-60 pointer-events-none" />
-                <div className="absolute w-28 h-28 rounded-full bg-primary/15 animate-pulse pointer-events-none" />
+                <div className="absolute w-32 h-32 rounded-full bg-tertiary/15 animate-ping opacity-60 pointer-events-none" />
+                <div className="absolute w-28 h-28 rounded-full bg-tertiary/15 animate-pulse pointer-events-none" />
               </>
             )}
             <button
@@ -471,13 +471,13 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
               onClick={toggleRecording}
               className={`relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer focus:outline-none ${
                 isRecording
-                  ? "bg-error text-white shadow-error/30"
-                  : "bg-primary text-on-primary shadow-primary/30"
+                  ? "bg-tertiary text-on-tertiary shadow-tertiary/30"
+                  : "bg-primary text-on-tertiary shadow-primary/30"
               }`}
               type="button"
             >
               <span
-                className="material-symbols-outlined text-[36px] sm:text-[40px] text-white"
+                className="material-symbols-outlined text-[36px] sm:text-[40px] text-on-tertiary"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 {isRecording ? "mic" : "mic_none"}
@@ -487,10 +487,10 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
 
           {/* Real Audio Volume Waveform Visualizer & Timer */}
           <div className="mt-5 flex flex-col items-center gap-2 w-full">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container text-on-surface text-xs font-semibold tracking-wide border border-outline-variant/15">
-              <span className={`w-2 h-2 rounded-full ${isRecording ? "bg-error animate-pulse" : "bg-outline"}`} />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container text-on-primary-container text-xs font-semibold tracking-wide border border-secondary/15">
+              <span className={`w-2 h-2 rounded-full ${isRecording ? "bg-tertiary animate-pulse" : "bg-secondary"}`} />
               <span className="font-mono text-[13px]">{formatTimer(seconds)}</span>
-              <span className="text-on-surface-variant font-normal opacity-70">
+              <span className="text-on-secondary-container font-normal opacity-70">
                 · {isRecording ? "Live microphone recording" : "Click mic to speak"}
               </span>
             </div>
@@ -501,7 +501,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
                 <span
                   key={i}
                   className={`w-1 rounded-full transition-all duration-75 ${
-                    isRecording ? "bg-primary" : "bg-outline-variant/40"
+                    isRecording ? "bg-primary" : "bg-secondary/40"
                   }`}
                   style={{
                     height: isRecording ? `${h}px` : "5px",
@@ -513,20 +513,20 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
         </div>
 
         {/* Live Real-Time Transcript Box */}
-        <div className="bg-surface-container-low rounded-xl p-4 sm:p-5 shadow-sm mb-6 border border-outline-variant/20 transition-all">
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-surface-container-high/40">
+        <div className="bg-surface-container rounded-xl p-4 sm:p-5 shadow-sm mb-6 border border-secondary/20 transition-all">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-surface-container/40">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px] text-primary">notes</span>
-              <span className="text-sm font-semibold text-on-surface">Live Transcript</span>
+              <span className="text-sm font-semibold text-on-primary-container">Live Transcript</span>
             </div>
             <div className="flex items-center gap-2">
               {isRecording ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error/10 text-error text-[11px] font-semibold animate-pulse">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-tertiary/10 text-tertiary text-[11px] font-semibold animate-pulse">
                   <span className="material-symbols-outlined text-[12px]">graphic_eq</span>
                   Transcribing Voice...
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-container text-[11px] font-semibold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-semibold">
                   <span className="material-symbols-outlined text-[12px]">keyboard</span>
                   Editable Voice Transcript
                 </span>
@@ -535,10 +535,10 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
           </div>
 
           {/* Editable / Spoken text display */}
-          <div className="text-sm sm:text-base text-on-surface leading-relaxed min-h-[6rem] relative">
+          <div className="text-sm sm:text-base text-on-primary-container leading-relaxed min-h-[6rem] relative">
             <textarea
               id="voice-transcript-input"
-              className="w-full bg-transparent border-0 resize-none focus:outline-none font-sans text-on-surface leading-relaxed placeholder:text-on-surface-variant/50"
+              className="w-full bg-transparent border-0 resize-none focus:outline-none font-sans text-on-primary-container leading-relaxed placeholder:text-on-secondary-container/50"
               rows={4}
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
@@ -559,9 +559,9 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
           </div>
 
           {/* Dynamic Detected Tags Row & Sample Preset Buttons */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-3 mt-2 border-t border-outline-variant/15 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-3 mt-2 border-t border-secondary/15 text-xs">
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-on-surface-variant font-medium mr-1">Detected so far:</span>
+              <span className="text-on-secondary-container font-medium mr-1">Detected so far:</span>
               {detectedTags.length > 0 ? (
                 detectedTags.map((tag, idx) => (
                   <span
@@ -572,7 +572,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
                   </span>
                 ))
               ) : (
-                <span className="text-[11px] text-on-surface-variant italic">
+                <span className="text-[11px] text-on-secondary-container italic">
                   (Speak dates, pax, rooms, or budget)
                 </span>
               )}
@@ -581,7 +581,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setTranscript(SAMPLE_NORDIC_TECH)}
-                className="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-[11px] text-primary font-semibold transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container text-[11px] text-primary font-semibold transition-colors cursor-pointer"
                 type="button"
                 title="Load sample: Nordic Tech AB 60 Pax"
               >
@@ -589,7 +589,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
               </button>
               <button
                 onClick={() => setTranscript(SAMPLE_SPOTIFY)}
-                className="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-[11px] text-secondary font-semibold transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container text-[11px] text-secondary font-semibold transition-colors cursor-pointer"
                 type="button"
                 title="Load sample: Spotify Executive Summit 120 Pax"
               >
@@ -601,7 +601,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
                     setTranscript("");
                     setInterimText("");
                   }}
-                  className="px-2 py-1 rounded hover:bg-surface-container text-[11px] text-on-surface-variant transition-colors cursor-pointer"
+                  className="px-2 py-1 rounded hover:bg-surface-container text-[11px] text-on-secondary-container transition-colors cursor-pointer"
                   type="button"
                 >
                   Clear
@@ -615,7 +615,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3">
           <button
             onClick={onCancel}
-            className="w-full sm:w-auto h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+            className="w-full sm:w-auto h-11 px-5 rounded-xl bg-surface-container hover:bg-surface-container text-on-primary-container text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
@@ -626,7 +626,7 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
             id="btn-finish-and-parse"
             onClick={handleStopAndExtract}
             disabled={isExtracting || (!transcript.trim() && !interimText.trim())}
-            className="w-full sm:w-auto h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-sm font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-md disabled:opacity-50"
+            className="w-full sm:w-auto h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-on-tertiary text-sm font-semibold flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-md disabled:opacity-50"
             type="button"
           >
             {isExtracting ? (
@@ -645,10 +645,10 @@ export const VoiceCaptureView: React.FC<VoiceCaptureViewProps> = ({ onCancel, on
 
         {/* Helper Keyboard Shortcuts Hint */}
         <div className="text-center pt-1">
-          <p className="text-xs text-on-surface-variant opacity-80 flex items-center justify-center gap-1.5">
+          <p className="text-xs text-on-secondary-container opacity-80 flex items-center justify-center gap-1.5">
             <span className="material-symbols-outlined text-[14px]">keyboard</span>
             <span>
-              Press <kbd className="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[10px] text-on-surface shadow-sm">Space</kbd> to toggle mic or <kbd className="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[10px] text-on-surface shadow-sm">Esc</kbd> to cancel
+              Press <kbd className="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[10px] text-on-primary-container shadow-sm">Space</kbd> to toggle mic or <kbd className="px-1.5 py-0.5 rounded bg-surface-container font-mono text-[10px] text-on-primary-container shadow-sm">Esc</kbd> to cancel
             </span>
           </p>
         </div>

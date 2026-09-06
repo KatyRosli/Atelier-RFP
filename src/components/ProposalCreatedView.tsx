@@ -54,24 +54,24 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
   return (
     <div className="flex flex-col w-full max-w-[800px] mx-auto py-8 px-4 sm:px-6 relative">
       {/* Background Ambient Glow */}
-      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-fixed/25 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-96 h-96 bg-secondary-container/25 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* Top Status 201 Created Banner */}
-      <div className="w-full bg-surface-container-lowest rounded-2xl p-6 sm:p-7 shadow-sm mb-6 border border-outline-variant/20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-secondary-fixed" />
+      <div className="w-full bg-surface-container rounded-2xl p-6 sm:p-7 shadow-sm mb-6 border border-secondary/20 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-secondary-container" />
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-14 h-14 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center flex-shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[32px]">task_alt</span>
             </div>
             <div>
-              <h1 className="text-[24px] sm:text-[28px] font-bold text-on-surface tracking-tight">
+              <h1 className="text-[24px] sm:text-[28px] font-bold text-on-primary-container tracking-tight">
                 {isLive ? "Proposal Created in Proposales!" : "Request Submitted to Proposales"}
               </h1>
-              <p className="text-xs sm:text-sm text-on-surface-variant mt-1">
+              <p className="text-xs sm:text-sm text-on-secondary-container mt-1">
                 {isLive ? "Live draft published for " : "Filed in the hotel's inbox for "}
-                <strong className="text-on-surface">{proposal.title}</strong> ·{" "}
+                <strong className="text-on-primary-container">{proposal.title}</strong> ·{" "}
                 {isLive ? "Total Contract" : "Estimated Budget"}:{" "}
                 <strong className="text-primary font-semibold">{proposal.totalAmountSEK.toLocaleString()} SEK</strong>
               </p>
@@ -81,11 +81,11 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
       </div>
 
       {/* Proposal Reference Card */}
-      <div className="w-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-outline-variant/20">
+      <div className="w-full bg-surface-container rounded-2xl p-6 shadow-sm mb-6 border border-secondary/20">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[20px]">link</span>
-            <h2 className="text-sm font-semibold text-on-surface">
+            <h2 className="text-sm font-semibold text-on-primary-container">
               {isLive ? "Client Public Proposal Link" : "Proposal Reference"}
             </h2>
           </div>
@@ -103,9 +103,9 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
         </div>
 
         {/* URL Box with Quick Copy */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-surface-container rounded-xl border border-outline-variant/25">
-          <div className="flex-1 flex items-center gap-2 px-3 py-2 text-xs font-mono text-on-surface truncate min-w-0">
-            <span className="material-symbols-outlined text-on-surface-variant text-[16px] shrink-0">lock</span>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-1.5 bg-surface-container rounded-xl border border-secondary/25">
+          <div className="flex-1 flex items-center gap-2 px-3 py-2 text-xs font-mono text-on-primary-container truncate min-w-0">
+            <span className="material-symbols-outlined text-on-secondary-container text-[16px] shrink-0">lock</span>
             <span className="truncate">{proposalUrl}</span>
           </div>
 
@@ -113,7 +113,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             <button
               id="btn-view-pdf-created"
               onClick={() => setIsPdfModalOpen(true)}
-              className="h-10 px-3.5 sm:px-4 rounded-lg bg-secondary-container hover:bg-secondary-fixed text-on-primary text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+              className="h-10 px-3.5 sm:px-4 rounded-lg bg-secondary-container hover:bg-secondary-container text-on-primary text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               type="button"
               title="Preview and print official proposal PDF"
             >
@@ -123,7 +123,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
 
             <button
               onClick={handleCopyLink}
-              className="h-10 px-4 rounded-lg bg-surface-container-lowest hover:bg-surface-container-high text-on-surface text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+              className="h-10 px-4 rounded-lg bg-surface-container hover:bg-surface-container text-on-primary-container text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
               type="button"
             >
               <span className="material-symbols-outlined text-[16px]">
@@ -147,35 +147,35 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
         </div>
 
         {!isLive && (
-          <p className="text-[11px] text-on-surface-variant mt-2.5">
+          <p className="text-[11px] text-on-secondary-container mt-2.5">
             This request has been filed in Grand Hôtel's Proposales inbox. A team member will review it and send the client a live, signable proposal from Proposales directly — this reference link is for this app's own PDF preview only, not a public client-facing page.
           </p>
         )}
 
         {/* Quick Specs Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-outline-variant/15 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-secondary/15 text-xs">
           <div className="flex flex-col">
-            <span className="text-[11px] text-on-surface-variant">Capacity</span>
-            <span className="font-semibold text-on-surface mt-0.5">{proposal.guestsCount} Pax</span>
+            <span className="text-[11px] text-on-secondary-container">Capacity</span>
+            <span className="font-semibold text-on-primary-container mt-0.5">{proposal.guestsCount} Pax</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[11px] text-on-surface-variant">Accommodation</span>
-            <span className="font-semibold text-on-surface mt-0.5">{proposal.roomQuantity} Deluxe Rooms</span>
+            <span className="text-[11px] text-on-secondary-container">Accommodation</span>
+            <span className="font-semibold text-on-primary-container mt-0.5">{proposal.roomQuantity} Deluxe Rooms</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[11px] text-on-surface-variant">Meeting &amp; Dining</span>
-            <span className="font-semibold text-on-surface mt-0.5">Ballroom &amp; Catering</span>
+            <span className="text-[11px] text-on-secondary-container">Meeting &amp; Dining</span>
+            <span className="font-semibold text-on-primary-container mt-0.5">Ballroom &amp; Catering</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-[11px] text-on-surface-variant">Validity</span>
+            <span className="text-[11px] text-on-secondary-container">Validity</span>
             <span className="font-semibold text-emerald-800 mt-0.5">Valid Until 15 Jan 2027</span>
           </div>
         </div>
       </div>
 
       {/* 1-Click Instant Distribution Bar */}
-      <div className="w-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-outline-variant/20">
-        <h3 className="text-xs uppercase tracking-wider text-on-surface-variant font-bold mb-3">
+      <div className="w-full bg-surface-container rounded-2xl p-6 shadow-sm mb-6 border border-secondary/20">
+        <h3 className="text-xs uppercase tracking-wider text-on-secondary-container font-bold mb-3">
           1-Click Instant Distribution &amp; Review
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -189,10 +189,10 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
               <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-on-surface group-hover:text-primary transition-colors">
+              <span className="text-xs font-bold text-on-primary-container group-hover:text-primary transition-colors">
                 View &amp; Print PDF
               </span>
-              <span className="text-[11px] text-on-surface-variant truncate">Official A4 quotation</span>
+              <span className="text-[11px] text-on-secondary-container truncate">Official A4 quotation</span>
             </div>
           </button>
 
@@ -201,16 +201,16 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             href={waUrl}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/15"
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container transition-colors group cursor-pointer border border-secondary/15"
           >
             <div className="w-9 h-9 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">chat</span>
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors">
+              <span className="text-xs font-semibold text-on-primary-container group-hover:text-primary transition-colors">
                 WhatsApp
               </span>
-              <span className="text-[11px] text-on-surface-variant truncate">
+              <span className="text-[11px] text-on-secondary-container truncate">
                 Message to {proposal.contactName.split(" ")[0]}
               </span>
             </div>
@@ -219,16 +219,16 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
           {/* SMS Mobile */}
           <a
             href={smsUrl}
-            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/15"
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container transition-colors group cursor-pointer border border-secondary/15"
           >
             <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">sms</span>
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors">
+              <span className="text-xs font-semibold text-on-primary-container group-hover:text-primary transition-colors">
                 SMS Mobile
               </span>
-              <span className="text-[11px] text-on-surface-variant truncate">
+              <span className="text-[11px] text-on-secondary-container truncate">
                 Dispatch text to contact
               </span>
             </div>
@@ -237,34 +237,34 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
           {/* Email dispatch */}
           <button
             onClick={() => setIsEmailModalOpen(true)}
-            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group cursor-pointer border border-outline-variant/15 text-left"
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container transition-colors group cursor-pointer border border-secondary/15 text-left"
             type="button"
           >
-            <div className="w-9 h-9 rounded-lg bg-inverse-surface text-inverse-on-surface flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">mail</span>
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors">
+              <span className="text-xs font-semibold text-on-primary-container group-hover:text-primary transition-colors">
                 Send Email Copy
               </span>
-              <span className="text-[11px] text-on-surface-variant truncate">Stockholm branded layout</span>
+              <span className="text-[11px] text-on-secondary-container truncate">Stockholm branded layout</span>
             </div>
           </button>
         </div>
       </div>
 
       {/* Client Live Experience Preview Inside Proposales */}
-      <div className="w-full bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-6 border border-outline-variant/20">
+      <div className="w-full bg-surface-container rounded-2xl p-6 shadow-sm mb-6 border border-secondary/20">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[20px]">devices</span>
-            <h3 className="text-sm font-semibold text-on-surface">Client Live Experience Preview</h3>
+            <h3 className="text-sm font-semibold text-on-primary-container">Client Live Experience Preview</h3>
           </div>
           <div className="flex items-center gap-1 bg-surface-container rounded-lg p-0.5">
             <button
               onClick={() => setPreviewDevice("desktop")}
               className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
-                previewDevice === "desktop" ? "bg-surface-container-lowest text-on-surface shadow-xs" : "text-on-surface-variant"
+                previewDevice === "desktop" ? "bg-surface-container text-on-primary-container shadow-xs" : "text-on-secondary-container"
               }`}
               type="button"
             >
@@ -273,7 +273,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             <button
               onClick={() => setPreviewDevice("mobile")}
               className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
-                previewDevice === "mobile" ? "bg-surface-container-lowest text-on-surface shadow-xs" : "text-on-surface-variant"
+                previewDevice === "mobile" ? "bg-surface-container text-on-primary-container shadow-xs" : "text-on-secondary-container"
               }`}
               type="button"
             >
@@ -284,18 +284,18 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
 
         {/* Mock Proposal Page Browser Frame */}
         <div
-          className={`mx-auto rounded-xl overflow-hidden border border-outline-variant/30 shadow-md bg-white transition-all duration-300 ${
+          className={`mx-auto rounded-xl overflow-hidden border border-secondary/30 shadow-md bg-white transition-all duration-300 ${
             previewDevice === "mobile" ? "max-w-xs" : "w-full"
           }`}
         >
           {/* Mock Browser Header */}
-          <div className="bg-surface-container-high px-4 py-2 flex items-center gap-2 border-b border-outline-variant/20">
+          <div className="bg-surface-container px-4 py-2 flex items-center gap-2 border-b border-secondary/20">
             <div className="flex items-center gap-1">
               <span className="w-2.5 h-2.5 rounded-full bg-error/70 inline-block" />
               <span className="w-2.5 h-2.5 rounded-full bg-tertiary/70 inline-block" />
               <span className="w-2.5 h-2.5 rounded-full bg-secondary/70 inline-block" />
             </div>
-            <div className="flex-1 text-center font-mono text-[10px] text-on-surface-variant/70 truncate bg-surface-container-lowest/80 py-0.5 px-2 rounded">
+            <div className="flex-1 text-center font-mono text-[10px] text-on-secondary-container/70 truncate bg-surface-container/80 py-0.5 px-2 rounded">
               proposales.com/p/grand-hotel/{clientName.toLowerCase().replace(/\s+/g, "-")}
             </div>
           </div>

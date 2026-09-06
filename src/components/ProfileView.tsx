@@ -155,28 +155,28 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     <div className="flex flex-col w-full max-w-[800px] mx-auto py-6 sm:py-8 px-4 sm:px-6">
       {/* Top Header */}
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-[26px] sm:text-[30px] font-bold text-on-surface tracking-tight">
+        <h1 className="text-[26px] sm:text-[30px] font-bold text-on-primary-container tracking-tight">
           Profile &amp; Preferences
         </h1>
-        <p className="text-xs sm:text-sm text-on-surface-variant mt-1 max-w-xl">
+        <p className="text-xs sm:text-sm text-on-secondary-container mt-1 max-w-xl">
           Configure your personal sales agent identity, hotel venue information, and visual display mode.
         </p>
       </div>
 
       <div className="flex flex-col gap-6">
         {/* Profile Card & Form */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-xs border border-outline-variant/30">
-          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-outline-variant/20">
-            <div className="w-14 h-14 rounded-2xl bg-primary text-on-primary font-bold text-xl flex items-center justify-center shadow-sm flex-shrink-0">
+        <div className="bg-surface-container rounded-2xl p-5 sm:p-7 shadow-xs border border-secondary/30">
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-secondary/20">
+            <div className="w-14 h-14 rounded-2xl bg-primary text-on-tertiary font-bold text-xl flex items-center justify-center shadow-sm flex-shrink-0">
               {firstName.charAt(0).toUpperCase()}
               {lastName.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <h2 className="text-base sm:text-lg font-bold text-on-surface truncate">
+              <h2 className="text-base sm:text-lg font-bold text-on-primary-container truncate">
                 {firstName} {lastName}
               </h2>
-              <p className="text-xs text-on-surface-variant truncate">
-                {role} · <span className="font-semibold text-primary">{companyName}</span>
+              <p className="text-xs text-on-secondary-container truncate">
+                {role} · <span className="font-semibold text-on-primary-container">{companyName}</span>
               </p>
             </div>
           </div>
@@ -185,7 +185,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* First Name Input */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="input-first-name" className="text-xs font-semibold text-on-surface">
+                <label htmlFor="input-first-name" className="text-xs font-semibold text-on-primary-container">
                   First Name <span className="text-error">*</span>
                 </label>
                 <input
@@ -195,13 +195,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={firstName}
                   onChange={(e) => handleFirstNameChange(e.target.value)}
                   placeholder="e.g. Alex"
-                  className="h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+                  className="h-11 px-3.5 rounded-xl bg-surface-container text-on-primary-container text-sm border border-secondary/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-secondary-container/50"
                 />
               </div>
 
               {/* Last Name Input */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="input-last-name" className="text-xs font-semibold text-on-surface">
+                <label htmlFor="input-last-name" className="text-xs font-semibold text-on-primary-container">
                   Last Name <span className="text-error">*</span>
                 </label>
                 <input
@@ -211,14 +211,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={lastName}
                   onChange={(e) => handleLastNameChange(e.target.value)}
                   placeholder="e.g. Lindell"
-                  className="h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+                  className="h-11 px-3.5 rounded-xl bg-surface-container text-on-primary-container text-sm border border-secondary/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-secondary-container/50"
                 />
               </div>
             </div>
 
             {/* Role Input */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="input-role" className="text-xs font-semibold text-on-surface">
+              <label htmlFor="input-role" className="text-xs font-semibold text-on-primary-container">
                 Role <span className="text-error">*</span>
               </label>
               <input
@@ -228,17 +228,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 value={role}
                 onChange={(e) => handleRoleChange(e.target.value)}
                 placeholder="e.g. Sales Manager"
-                className="h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+                className="h-11 px-3.5 rounded-xl bg-surface-container text-on-primary-container text-sm border border-secondary/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-secondary-container/50"
               />
             </div>
 
             {/* Company Name Input */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="input-company-name" className="text-xs font-semibold text-on-surface">
+              <label htmlFor="input-company-name" className="text-xs font-semibold text-on-primary-container">
                 Company / Hotel Venue Name <span className="text-error">*</span>
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-on-secondary-container">
                   hotel
                 </span>
                 <input
@@ -248,18 +248,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={companyName}
                   onChange={(e) => handleCompanyNameChange(e.target.value)}
                   placeholder="e.g. Noir Hôtel Stockholm"
-                  className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+                  className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container text-on-primary-container text-sm border border-secondary/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-secondary-container/50"
                 />
               </div>
             </div>
 
             {/* Email Input */}
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="input-email" className="text-xs font-semibold text-on-surface">
+              <label htmlFor="input-email" className="text-xs font-semibold text-on-primary-container">
                 Work Email Address <span className="text-error">*</span>
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-on-secondary-container">
                   mail
                 </span>
                 <input
@@ -269,7 +269,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
                   placeholder="e.g. alex.lindell@noirhotel.se"
-                  className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container-low text-on-surface text-sm border border-outline-variant/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-surface-variant/50"
+                  className="w-full h-11 pl-10 pr-3.5 rounded-xl bg-surface-container text-on-primary-container text-sm border border-secondary/30 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder:text-on-secondary-container/50"
                 />
               </div>
             </div>
@@ -283,7 +283,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     Profile saved successfully
                   </span>
                 ) : (
-                  <span className="text-on-surface-variant opacity-70">
+                  <span className="text-on-secondary-container opacity-70">
                     Used automatically for Proposales author signatures.
                   </span>
                 )}
@@ -291,7 +291,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <button
                 id="btn-save-profile"
                 type="submit"
-                className="h-10 px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                className="h-10 px-5 rounded-xl bg-primary hover:bg-primary-container text-on-tertiary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">save</span>
                 <span>Save Profile</span>
@@ -301,10 +301,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </div>
 
         {/* Display Mode & WCAG Accessibility Card */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-7 shadow-xs border border-outline-variant/30">
+        <div className="bg-surface-container rounded-2xl p-5 sm:p-7 shadow-xs border border-secondary/30">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
             <div>
-              <h2 className="text-base font-bold text-on-surface flex items-center gap-2">
+              <h2 className="text-base font-bold text-on-primary-container flex items-center gap-2">
                 <span>Display Mode &amp; Contrast</span>
               </h2>
             </div>
@@ -320,11 +320,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               className={`p-4 rounded-xl text-left border-2 transition-all flex flex-col justify-between min-h-[110px] cursor-pointer ${
                 themeMode === "light"
                   ? "border-primary bg-primary/5 shadow-xs ring-2 ring-primary/20"
-                  : "border-outline-variant/40 bg-surface-container-low hover:border-outline-variant"
+                  : "border-secondary/40 bg-surface-container hover:border-secondary"
               }`}
             >
               <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-2xs">
+                <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shadow-2xs">
                   <span className="material-symbols-outlined text-[20px]">light_mode</span>
                 </div>
                 {themeMode === "light" && (
@@ -334,8 +334,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 )}
               </div>
               <div className="mt-3">
-                <div className="text-xs font-bold text-on-surface">Light Mode</div>
-                <div className="text-[11px] text-on-surface-variant opacity-80 mt-0.5">
+                <div className="text-xs font-bold text-on-primary-container">Light Mode</div>
+                <div className="text-[11px] text-on-secondary-container opacity-80 mt-0.5">
                   High-contrast off-white canvas
                 </div>
               </div>
@@ -349,22 +349,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               className={`p-4 rounded-xl text-left border-2 transition-all flex flex-col justify-between min-h-[110px] cursor-pointer ${
                 themeMode === "dark"
                   ? "border-primary bg-primary/10 shadow-xs ring-2 ring-primary/20"
-                  : "border-outline-variant/40 bg-surface-container-low hover:border-outline-variant"
+                  : "border-secondary/40 bg-surface-container hover:border-secondary"
               }`}
             >
               <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shadow-2xs">
+                <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shadow-2xs">
                   <span className="material-symbols-outlined text-[20px]">dark_mode</span>
                 </div>
                 {themeMode === "dark" && (
-                  <span className="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center text-[11px]">
+                  <span className="w-5 h-5 rounded-full bg-primary text-on-tertiary flex items-center justify-center text-[11px]">
                     ✓
                   </span>
                 )}
               </div>
               <div className="mt-3">
-                <div className="text-xs font-bold text-on-surface">Dark Mode</div>
-                <div className="text-[11px] text-on-surface-variant opacity-80 mt-0.5">
+                <div className="text-xs font-bold text-on-primary-container">Dark Mode</div>
+                <div className="text-[11px] text-on-secondary-container opacity-80 mt-0.5">
                   Deep slate &amp; glowing teal accents
                 </div>
               </div>
@@ -410,17 +410,17 @@ const ApiDiagnosticsWidget: React.FC = () => {
   }, []);
 
   return (
-    <div className="pt-3 border-t border-outline-variant/20">
+    <div className="pt-3 border-t border-secondary/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-primary text-[18px]">key</span>
-          <span className="text-xs font-bold text-on-surface">.env.local Credentials Diagnostics</span>
+          <span className="text-xs font-bold text-on-primary-container">.env.local Credentials Diagnostics</span>
         </div>
         <button
           type="button"
           onClick={runTest}
           disabled={testing}
-          className="h-8 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-[11px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60"
+          className="h-8 px-3 rounded-lg bg-surface-container hover:bg-surface-container text-on-primary-container text-[11px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-60"
         >
           <span className={`material-symbols-outlined text-[14px] ${testing ? "animate-spin" : ""}`}>
             sync
@@ -431,16 +431,16 @@ const ApiDiagnosticsWidget: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
         {/* OpenAI Key */}
-        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+        <div className="p-2.5 rounded-lg bg-surface-container border border-secondary/15 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant">OPENAI_API_KEY</span>
+            <span className="text-[10px] uppercase font-bold text-on-secondary-container">OPENAI_API_KEY</span>
             {healthData?.hasOpenAIKey ? (
               <span className="w-2 h-2 rounded-full bg-secondary" title="Key detected" />
             ) : (
               <span className="w-2 h-2 rounded-full bg-amber-500" title="Key not found in env" />
             )}
           </div>
-          <div className="mt-1 font-semibold text-[11px] text-on-surface flex items-center gap-1">
+          <div className="mt-1 font-semibold text-[11px] text-on-primary-container flex items-center gap-1">
             {healthData?.hasOpenAIKey ? (
               <span className="text-secondary font-bold">✓ GPT-4o-mini Ready</span>
             ) : (
@@ -450,46 +450,46 @@ const ApiDiagnosticsWidget: React.FC = () => {
         </div>
 
         {/* Proposales Key */}
-        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+        <div className="p-2.5 rounded-lg bg-surface-container border border-secondary/15 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant">PROPOSALES_INBOX_TOKEN</span>
+            <span className="text-[10px] uppercase font-bold text-on-secondary-container">PROPOSALES_INBOX_TOKEN</span>
             {healthData?.hasProposalesKey ? (
               <span className="w-2 h-2 rounded-full bg-secondary" title="Live key active" />
             ) : (
               <span className="w-2 h-2 rounded-full bg-secondary/60" title="Sandbox mode" />
             )}
           </div>
-          <div className="mt-1 font-semibold text-[11px] text-on-surface">
+          <div className="mt-1 font-semibold text-[11px] text-on-primary-container">
             {healthData?.hasProposalesKey ? (
               <span className="text-secondary font-bold">✓ Live API Enabled</span>
             ) : (
-              <span className="text-on-surface-variant">Demo Gateway Mode</span>
+              <span className="text-on-secondary-container">Demo Gateway Mode</span>
             )}
           </div>
         </div>
 
         {/* Gemini Key */}
-        <div className="p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/15 flex flex-col justify-between">
+        <div className="p-2.5 rounded-lg bg-surface-container border border-secondary/15 flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-bold text-on-surface-variant">GEMINI_API_KEY</span>
+            <span className="text-[10px] uppercase font-bold text-on-secondary-container">GEMINI_API_KEY</span>
             {healthData?.hasGeminiKey ? (
               <span className="w-2 h-2 rounded-full bg-secondary" />
             ) : (
-              <span className="w-2 h-2 rounded-full bg-outline" />
+              <span className="w-2 h-2 rounded-full bg-secondary" />
             )}
           </div>
-          <div className="mt-1 font-semibold text-[11px] text-on-surface">
+          <div className="mt-1 font-semibold text-[11px] text-on-primary-container">
             {healthData?.hasGeminiKey ? (
               <span className="text-secondary font-bold">✓ 2.5 Flash Secondary</span>
             ) : (
-              <span className="text-on-surface-variant">Optional Secondary</span>
+              <span className="text-on-secondary-container">Optional Secondary</span>
             )}
           </div>
         </div>
       </div>
 
       {healthData?.testedAt && (
-        <div className="text-[10px] text-on-surface-variant mt-2 text-right">
+        <div className="text-[10px] text-on-secondary-container mt-2 text-right">
           Last verified at {healthData.testedAt} · Server status: {healthData.status}
         </div>
       )}

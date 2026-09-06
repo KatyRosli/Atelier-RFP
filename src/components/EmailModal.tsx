@@ -31,15 +31,15 @@ export const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose, proposa
   };
 
   return (
-    <div className="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-      <div className="bg-surface-container-lowest rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-outline-variant/30">
+    <div className="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-surface-container rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-secondary/30">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[22px]">mark_email_read</span>
-            <h3 className="text-lg font-semibold text-on-surface">Luxury Email Dispatch</h3>
+            <h3 className="text-lg font-semibold text-on-primary-container">Luxury Email Dispatch</h3>
           </div>
           <button
-            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-surface-variant transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container text-on-secondary-container transition-colors"
             onClick={onClose}
             type="button"
           >
@@ -48,24 +48,24 @@ export const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose, proposa
         </div>
 
         <div className="space-y-3 mb-6">
-          <div className="bg-surface-container-low p-3 rounded-xl">
-            <span className="text-xs text-on-surface-variant block font-medium">Recipient</span>
-            <span className="text-sm text-on-surface font-semibold">{recipient}</span>
+          <div className="bg-surface-container p-3 rounded-xl">
+            <span className="text-xs text-on-secondary-container block font-medium">Recipient</span>
+            <span className="text-sm text-on-primary-container font-semibold">{recipient}</span>
           </div>
 
-          <div className="bg-surface-container-low p-3 rounded-xl">
-            <span className="text-xs text-on-surface-variant block font-medium">Subject</span>
-            <span className="text-sm text-on-surface font-semibold">
+          <div className="bg-surface-container p-3 rounded-xl">
+            <span className="text-xs text-on-secondary-container block font-medium">Subject</span>
+            <span className="text-sm text-on-primary-container font-semibold">
               Noir Hôtel Stockholm · Bespoke Proposal for {clientName}
             </span>
           </div>
 
-          <div className="bg-surface-container-low p-4 rounded-xl text-xs text-on-surface-variant leading-relaxed space-y-2">
+          <div className="bg-surface-container p-4 rounded-xl text-xs text-on-secondary-container leading-relaxed space-y-2">
             <p>Dear {contactName},</p>
             <p>
               It was a pleasure speaking with you regarding your upcoming corporate offsite. We have crafted a personalized proposal encompassing our Waterfront Deluxe rooms and the Grand Ballroom.
             </p>
-            <div className="p-2.5 bg-surface-container-lowest rounded-lg border border-primary/20 text-primary font-medium">
+            <div className="p-2.5 bg-surface-container rounded-lg border border-primary/20 text-primary font-medium">
               View Proposal &amp; E-Sign:{" "}
               <a href={proposalUrl} target="_blank" rel="noreferrer" className="underline break-all">
                 {proposalUrl}
@@ -77,7 +77,7 @@ export const EmailModal: React.FC<EmailModalProps> = ({ isOpen, onClose, proposa
 
         <div className="flex items-center justify-end gap-3">
           <button
-            className="px-4 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-sm font-semibold transition-colors"
+            className="px-4 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container text-on-primary-container text-sm font-semibold transition-colors"
             onClick={onClose}
             type="button"
           >

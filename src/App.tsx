@@ -207,7 +207,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col md:flex-row">
+    <div className="min-h-screen bg-background text-on-primary-container flex flex-col md:flex-row">
       {/* Navigation Rail (Left on desktop, Bottom bar on mobile) */}
       <NavigationRail activeTab={activeTab} onSelectTab={goToTab} />
 
