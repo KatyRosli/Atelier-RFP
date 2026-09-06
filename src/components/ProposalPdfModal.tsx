@@ -1,5 +1,16 @@
 import React from "react";
 import { RfpPayload, ProposalItem } from "../types";
+import {
+  ROOM_NIGHT_RATE_SEK,
+  DAILY_CONFERENCE_PACKAGE_SEK,
+  CATERING_RATE_SEK,
+  getConferenceDays,
+  getCateringOccasions,
+  calculateAccommodationTotal,
+  calculateConferenceTotal,
+  calculateCateringTotal,
+  calculateMiscAndService,
+} from "../lib/pricing";
 
 interface ProposalPdfModalProps {
   isOpen: boolean;
@@ -65,18 +76,18 @@ export const ProposalPdfModal: React.FC<ProposalPdfModalProps> = ({
       ? catering.map((c) => `${c.item}${c.quantity ? ` (x${c.quantity})` : ""}`).join(", ")
       : "Welcome cocktail reception & 3-course dinner");
 
-  // Calculate itemized estimates for Grand Hôtel Stockholm quotation
-  const roomNightRate = 3200; // SEK per deluxe room / night
-  const accommodationTotal = roomQuantity * nights * roomNightRate;
-  const dailyConferencePackage = 1250; // SEK per delegate / day (space + A/V + lunch + fika)
-  const conferenceDays = meetingFacilities?.length
-    ? meetingFacilities.reduce((sum, m) => sum + (m.durationDays || 1), 0)
-    : 2;
-  const conferenceTotal = attendees * conferenceDays * dailyConferencePackage;
-  const cateringRate = 1850; // per guest, per catering occasion
-  const cateringOccasions = catering?.length || 1;
-  const cateringTotal = attendees * cateringOccasions * cateringRate;
-  const miscAndService = Math.max(0, totalBudgetSEK - (accommodationTotal + conferenceTotal + cateringTotal));
+  // Calculate itemized estimates for Noir Hôtel Stockholm quotation
+  // (rates and formulas live in src/lib/pricing.ts, shared with the server so the
+  // real Proposales proposal it creates always quotes the same numbers as this preview)
+  const roomNightRate = ROOM_NIGHT_RATE_SEK;
+  const accommodationTotal = calculateAccommodationTotal(roomQuantity, nights);
+  const dailyConferencePackage = DAILY_CONFERENCE_PACKAGE_SEK;
+  const conferenceDays = getConferenceDays(meetingFacilities);
+  const conferenceTotal = calculateConferenceTotal(attendees, conferenceDays);
+  const cateringRate = CATERING_RATE_SEK;
+  const cateringOccasions = getCateringOccasions(catering);
+  const cateringTotal = calculateCateringTotal(attendees, cateringOccasions);
+  const miscAndService = calculateMiscAndService(totalBudgetSEK, accommodationTotal + conferenceTotal + cateringTotal);
 
   const handlePrint = () => {
     window.print();
