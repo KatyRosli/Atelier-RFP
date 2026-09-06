@@ -11,7 +11,7 @@ export const config = {
   defaultUserId: "alex-default-user",
   defaultUserEmail: "alex.lindell@noirhotel.se",
 
-  // When the frontend is deployed separately from this backend (e.g. Vercel + Railway),
+  // When the frontend is deployed separately from this backend (Vercel + Railway),
   // set ALLOWED_ORIGIN to the frontend's origin(s), comma-separated. Left unset, CORS is
   // wide open, which is fine for same-origin deployments or local development.
   allowedOrigins: (process.env.ALLOWED_ORIGIN || "")

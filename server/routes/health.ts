@@ -14,9 +14,7 @@ healthRouter.get("/api/health", (req, res) => {
   });
 });
 
-// Real account info from Proposales (GET /v3/companies). Note: their API exposes
-// company-level data only (name, currency, timezone, website_url, logo_url) - there
-// is no "current user" endpoint, so an individual person's name/email can't be fetched.
+
 healthRouter.get("/api/proposales/company", async (_req, res) => {
   const apiKey = config.proposales.apiKey;
   if (!apiKey) {

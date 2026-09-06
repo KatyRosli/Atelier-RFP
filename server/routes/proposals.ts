@@ -14,7 +14,7 @@ import { createProposalesProposal, submitProposalesRfp } from "../services/propo
 
 export const proposalsRouter = express.Router();
 
-// Database-backed proposal retrieval: GET /api/proposals (single default account, no login)
+
 proposalsRouter.get("/api/proposals", async (_req, res) => {
   try {
     await getOrCreateUser(config.defaultUserId, config.defaultUserEmail);
@@ -27,7 +27,7 @@ proposalsRouter.get("/api/proposals", async (_req, res) => {
   }
 });
 
-// Database-backed proposal persistence: POST /api/proposals (single default account, no login)
+
 proposalsRouter.post("/api/proposals", async (req, res) => {
   try {
     const uid = config.defaultUserId;

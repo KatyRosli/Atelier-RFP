@@ -12,7 +12,7 @@ export const extractRouter = express.Router();
 function extractWithHeuristics(transcript: string): RfpPayload {
   const text = transcript || "";
 
-  // Extract attendee count
+  
   let attendees = 60;
   const guestMatch = text.match(/(\d+)\s*(?:guests?|attendees?|delegates?|people|pax)/i) ||
                      text.match(/(?:sixty|sixty-five|fifty|seventy|eighty|thirty|forty)\s*(?:guests?|attendees?|people)/i);
@@ -24,14 +24,14 @@ function extractWithHeuristics(transcript: string): RfpPayload {
     else if (/thirty/i.test(guestMatch[0])) attendees = 30;
   }
 
-  // Extract rooms
+  
   let roomCount = 30;
   const roomMatch = text.match(/(\d+)\s*(?:double|single|deluxe|hotel)?\s*rooms?/i);
   if (roomMatch) {
     roomCount = parseInt(roomMatch[1], 10);
   }
 
-  // Extract budget
+  
   let budgetSEK = 450000;
   const budgetMatch = text.match(/(\d+[\d,\.]*)\s*(?:thousand|k|m|million)?\s*(?:sek|kronor|kr)/i) ||
                       text.match(/(?:four\s*hundred\s*fifty\s*thousand|five\s*hundred\s*thousand)/i);
@@ -45,7 +45,7 @@ function extractWithHeuristics(transcript: string): RfpPayload {
     }
   }
 
-  // Extract email
+  
   let contactEmail = "maria@nordictech.se";
   const emailRegex = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/i;
   const spokenEmailRegex = /([a-zA-Z0-9._-]+)\s*(?:at|@)\s*([a-zA-Z0-9._-]+)\s*(?:dot|\.)\s*([a-zA-Z]{2,6})/i;
@@ -57,14 +57,14 @@ function extractWithHeuristics(transcript: string): RfpPayload {
     contactEmail = `${spokenEmailMatch[1]}@${spokenEmailMatch[2]}.${spokenEmailMatch[3]}`.toLowerCase();
   }
 
-  // Extract contact name
+  
   let contactName = "Maria Lindqvist";
   const contactMatch = text.match(/(?:contact\s*is|contact\s*person\s*is|organizer\s*is|point\s*of\s*contact\s*is)\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
   if (contactMatch) {
     contactName = contactMatch[1];
   }
 
-  // Extract organization
+  
   let orgName = "Nordic Tech AB";
   const orgMatch = text.match(/(?:for|company|client|organization|from)\s*([A-Z][A-Za-z0-9\s&]+(?:\s+AB|\s+AS|\s+Inc|\s+Ltd)?)/);
   if (orgMatch && orgMatch[1].trim().length > 2 && orgMatch[1].trim().length < 35) {
