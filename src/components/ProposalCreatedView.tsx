@@ -91,7 +91,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
           </div>
           {isLive ? (
             <span className="text-xs text-emerald-800 font-semibold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-800" />
+              <span className="w-1.5 h-1.5 px-2 py-0.5 rounded-full bg-success-container text-on-success" />
               Live in Proposales
             </span>
           ) : (
@@ -123,7 +123,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
 
             <button
               onClick={handleCopyLink}
-              className="h-10 px-4 rounded-lg bg-surface-container hover:bg-surface-container text-on-primary-container text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+              className="h-10 px-4 rounded-lg bg-secondary-container hover:bg-surface-container text-on-primary-container text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
               type="button"
             >
               <span className="material-symbols-outlined text-[16px]">
@@ -137,7 +137,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
                 href={proposalUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="h-10 px-4 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
+                className="h-10 px-4 rounded-lg bg-primary text-on-secondary hover:bg-primary-container hover:text-on-primary text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
               >
                 <span>Open in Proposales</span>
                 <span className="material-symbols-outlined text-[16px]">open_in_new</span>
@@ -168,7 +168,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
           </div>
           <div className="flex flex-col">
             <span className="text-[11px] text-on-secondary-container">Validity</span>
-            <span className="font-semibold text-emerald-800 mt-0.5">Valid Until 15 Jan 2027</span>
+            <span className="font-semibold px-2 py-0.5 rounded-full bg-success-container text-on-success mt-0.5">Valid until 15 Jan 2027</span>
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             href={smsUrl}
             className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container transition-colors group cursor-pointer border border-secondary/15"
           >
-            <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-primary text-on-tertiary flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">sms</span>
             </div>
             <div className="flex flex-col min-w-0">
@@ -240,7 +240,7 @@ export const ProposalCreatedView: React.FC<ProposalCreatedViewProps> = ({
             className="flex items-center gap-3 p-3.5 rounded-xl bg-surface-container hover:bg-surface-container transition-colors group cursor-pointer border border-secondary/15 text-left"
             type="button"
           >
-            <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-primary text-on-tertiary flex items-center justify-center shrink-0 shadow-sm">
               <span className="material-symbols-outlined text-[20px]">mail</span>
             </div>
             <div className="flex flex-col min-w-0">
